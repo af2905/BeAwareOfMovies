@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.af2905.beawareofmovies.BuildConfig
 import com.af2905.beawareofmovies.R
 import com.af2905.beawareofmovies.data.MockRepository
 import com.af2905.beawareofmovies.data.Movie
@@ -77,7 +76,6 @@ class FeedFragment : Fragment() {
         )
 
         adapter.apply { addAll(newMoviesList) }
-
     }
 
     private fun openMovieDetails(movie: Movie) {
@@ -120,7 +118,7 @@ class FeedFragment : Fragment() {
         inflater.inflate(R.menu.main_menu, menu)
     }
 
-    companion object {
+/*    companion object {
         const val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
-    }
+    }*/
 }
