@@ -3,7 +3,7 @@ package com.af2905.beawareofmovies
 import android.app.Application
 import timber.log.Timber
 
-class MovieFinderApp : Application() {
+class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -21,7 +21,7 @@ class MovieFinderApp : Application() {
     }
 
     companion object {
-        var instance: MovieFinderApp? = null
+        var instance: App? = null
             private set
     }
 }
