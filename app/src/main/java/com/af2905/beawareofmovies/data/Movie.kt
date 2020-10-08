@@ -16,7 +16,7 @@ data class Movie(
     val posterPath: String? = null,
 
     @SerializedName("id")
-    val id: Int? = null,
+    val id: Int,
 
     @SerializedName("adult")
     val isAdult: Boolean? = null,

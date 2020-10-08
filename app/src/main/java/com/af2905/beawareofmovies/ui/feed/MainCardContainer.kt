@@ -20,4 +20,10 @@ class MainCardContainer(
         viewHolder.items_container.adapter =
             GroupAdapter<GroupieViewHolder>().apply { addAll(items) }
     }
+
+    override fun getId(): Long {
+        return this.hashCode().toLong()
+    }
+
+
 }
