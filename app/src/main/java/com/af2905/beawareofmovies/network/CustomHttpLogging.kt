@@ -8,8 +8,9 @@ import timber.log.Timber
 
 class CustomHttpLogging : HttpLoggingInterceptor.Logger {
     override fun log(message: String) {
+        val logName = "OkHttp"
         if (!message.startsWith("{")) {
-            Timber.d(message)
+            Timber.tag(logName).d(message)
             return
         }
         try {
@@ -17,9 +18,9 @@ class CustomHttpLogging : HttpLoggingInterceptor.Logger {
                 .setPrettyPrinting()
                 .create()
                 .toJson(JsonParser().parse(message))
-            Timber.d(prettyPrintJson)
+            Timber.tag(logName).d(prettyPrintJson)
         } catch (m: JsonSyntaxException) {
-            Timber.d(message)
+            Timber.tag(logName).d(message)
         }
     }
 }

@@ -12,7 +12,6 @@ interface MovieApiService {
     fun searchMoviesByQuery(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
         @Query(QUERY_PARAM_LANGUAGE) language: String = LANGUAGE,
-        @Query(QUERY_PARAM_PAGE) page: String = PAGE,
         @Query(QUERY_PARAM_QUERY) query: String,
         @Query(QUERY_PARAM_INCLUDE_ADULT) adult: String = INCLUDE_ADULT_DEFAULT
     ): Single<MoviesResponse>
@@ -22,7 +21,6 @@ interface MovieApiService {
     fun getPopularMovies(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
         @Query(QUERY_PARAM_LANGUAGE) language: String = LANGUAGE,
-        @Query(QUERY_PARAM_PAGE) page: String = PAGE
     ): Single<MoviesResponse>
 
     //movie/now_playing?api_key=<<api_key>>&language=ru-RU&page=1
@@ -30,7 +28,6 @@ interface MovieApiService {
     fun getNowPlayingMovies(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
         @Query(QUERY_PARAM_LANGUAGE) language: String = LANGUAGE,
-        @Query(QUERY_PARAM_PAGE) page: String = PAGE
     ): Single<MoviesResponse>
 
     //movie/upcoming?api_key=<<api_key>>&language=ru-RU&page=1
@@ -38,7 +35,6 @@ interface MovieApiService {
     fun getUpcomingMovies(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
         @Query(QUERY_PARAM_LANGUAGE) language: String = LANGUAGE,
-        @Query(QUERY_PARAM_PAGE) page: String = PAGE
     ): Single<MoviesResponse>
 
     //movie/top_rated?api_key=<<api_key>>&language=ru-RU&page=1
@@ -46,19 +42,16 @@ interface MovieApiService {
     fun getTopRatedMovies(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
         @Query(QUERY_PARAM_LANGUAGE) language: String = LANGUAGE,
-        @Query(QUERY_PARAM_PAGE) page: String = PAGE
     ): Single<MoviesResponse>
 
     companion object {
         private const val QUERY_PARAM_API_KEY = "api_key"
         private const val QUERY_PARAM_LANGUAGE = "language=ru-RU"
-        private const val QUERY_PARAM_PAGE = "page"
         private const val QUERY_PARAM_QUERY = "query"
         private const val QUERY_PARAM_INCLUDE_ADULT = "include_adult"
 
         private const val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
         private const val LANGUAGE = "ru-RU"
-        private const val PAGE = "1"
         private const val INCLUDE_ADULT_DEFAULT = "false"
     }
 }
