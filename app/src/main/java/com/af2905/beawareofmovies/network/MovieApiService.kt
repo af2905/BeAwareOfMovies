@@ -46,7 +46,7 @@ interface MovieApiService {
 
     companion object {
         private const val QUERY_PARAM_API_KEY = "api_key"
-        private const val QUERY_PARAM_LANGUAGE = "language=ru-RU"
+        private const val QUERY_PARAM_LANGUAGE = "language"
         private const val QUERY_PARAM_QUERY = "query"
         private const val QUERY_PARAM_INCLUDE_ADULT = "include_adult"
 
