@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.af2905.beawareofmovies.R
 import com.af2905.beawareofmovies.data.Movie
 import com.af2905.beawareofmovies.network.MovieApiClient
+import com.af2905.beawareofmovies.ui.observeOnMainThread
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit
 
 class FeedFragment : Fragment() {
     private var compositeDisposable = CompositeDisposable()
+    private lateinit var language: String
     private val adapter by lazy { GroupAdapter<GroupieViewHolder>() }
 
     override fun onCreateView(
@@ -36,6 +38,7 @@ class FeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        language = resources.getString(R.string.language)
         movies_recycler_view.layoutManager = LinearLayoutManager(context)
         getSearchQuery()
         getPopularMovies()
@@ -49,13 +52,9 @@ class FeedFragment : Fragment() {
             .map { it.trim() }
             .debounce(500, TimeUnit.MILLISECONDS)
             .filter { it.isNotEmpty() }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                if (it.length > 3) {
-                    openSearch(it)
-                }
-            })
+            .filter { it.length > 2 }
+            .observeOnMainThread()
+            .subscribe { openSearch(it) })
     }
 
     private fun openSearch(searchText: String) {
@@ -87,7 +86,7 @@ class FeedFragment : Fragment() {
     }
 
     private fun getPopularMovies() {
-        compositeDisposable.add(MovieApiClient.apiClient.getPopularMovies()
+        compositeDisposable.add(MovieApiClient.apiClient.getPopularMovies(language = language)
             .subscribeOn(Schedulers.io())
             .map { it.results }
             .observeOn(AndroidSchedulers.mainThread())
@@ -109,7 +108,7 @@ class FeedFragment : Fragment() {
     }
 
     private fun getNowPlayingMovies() {
-        compositeDisposable.add(MovieApiClient.apiClient.getNowPlayingMovies()
+        compositeDisposable.add(MovieApiClient.apiClient.getNowPlayingMovies(language = language)
             .subscribeOn(Schedulers.io())
             .map { it.results }
             .observeOn(AndroidSchedulers.mainThread())
@@ -131,7 +130,7 @@ class FeedFragment : Fragment() {
     }
 
     private fun getUpcomingMovies() {
-        compositeDisposable.add(MovieApiClient.apiClient.getUpcomingMovies()
+        compositeDisposable.add(MovieApiClient.apiClient.getUpcomingMovies(language = language)
             .subscribeOn(Schedulers.io())
             .map { it.results }
             .observeOn(AndroidSchedulers.mainThread())
@@ -153,7 +152,7 @@ class FeedFragment : Fragment() {
     }
 
     private fun getTopRatedMovies() {
-        compositeDisposable.add(MovieApiClient.apiClient.getTopRatedMovies()
+        compositeDisposable.add(MovieApiClient.apiClient.getTopRatedMovies(language = language)
             .subscribeOn(Schedulers.io())
             .map { it.results }
             .observeOn(AndroidSchedulers.mainThread())
@@ -178,5 +177,6 @@ class FeedFragment : Fragment() {
         super.onStop()
         search_toolbar.clear()
         compositeDisposable.clear()
+        adapter.clear()
     }
 }

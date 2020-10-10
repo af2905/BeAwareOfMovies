@@ -7,11 +7,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_card.*
 
-class MainCardContainer(
-    @StringRes
-    private val title: Int,
-    private val items: List<Item>
-) : Item() {
+class MainCardContainer(@StringRes private val title: Int, private val items: List<Item>) : Item() {
 
     override fun getLayout() = R.layout.item_card
 
@@ -20,10 +16,4 @@ class MainCardContainer(
         viewHolder.items_container.adapter =
             GroupAdapter<GroupieViewHolder>().apply { addAll(items) }
     }
-
-    override fun getId(): Long {
-        return this.hashCode().toLong()
-    }
-
-
 }

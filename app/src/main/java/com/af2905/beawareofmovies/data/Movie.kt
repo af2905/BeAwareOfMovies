@@ -12,9 +12,6 @@ data class Movie(
     @SerializedName("video")
     val isVideo: Boolean? = null,
 
-    @SerializedName("poster_path")
-    val posterPath: String? = null,
-
     @SerializedName("id")
     val id: Int,
 
@@ -36,12 +33,17 @@ data class Movie(
     @SerializedName("title")
     val title: String? = null,
 
-    @SerializedName("vote_average")
-    val voteAverage: Double = 0.0,
-
     @SerializedName("overview")
     val overview: String? = null,
 
     @SerializedName("release_date")
     val releaseDate: String? = null
-)
+) {
+    @SerializedName("vote_average")
+    val voteAverage: Double = 0.0
+        get() = field / 2
+
+    @SerializedName("poster_path")
+    val posterPath: String? = null
+        get() = "https://image.tmdb.org/t/p/w500/$field"
+}
