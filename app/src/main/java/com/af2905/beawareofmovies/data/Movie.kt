@@ -45,5 +45,7 @@ data class Movie(
 
     @SerializedName("poster_path")
     val posterPath: String? = null
-        get() = "https://image.tmdb.org/t/p/w500/$field"
+        get() {
+            return if (field != null) "https://image.tmdb.org/t/p/w500/$field" else null
+        }
 }

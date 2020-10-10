@@ -1,50 +1,112 @@
 package com.af2905.beawareofmovies.ui.search
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
+import com.af2905.beawareofmovies.data.Movie
+import com.af2905.beawareofmovies.network.MovieApiClient
+import com.af2905.beawareofmovies.observeOnMainThread
+import com.af2905.beawareofmovies.ui.observeOnMainThread
+import com.xwray.groupie.GroupAdapter
+import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.feed_header.*
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import kotlinx.android.synthetic.main.fragment_search.*
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class SearchFragment : Fragment() {
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var compositeDisposable = CompositeDisposable()
+    private lateinit var language: String
+    private val adapter by lazy { GroupAdapter<GroupieViewHolder>() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_search, container, false)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val searchTerm = requireArguments().getString("search")
+        val searchTerm = requireArguments().getString(SEARCH_QUERY) ?: ""
         search_toolbar.setText(searchTerm)
+        language = resources.getString(R.string.language)
+        showRequestedMoviesWhenViewCreated(searchTerm)
+        movies_recycler_view.layoutManager = LinearLayoutManager(context)
+        getSearchQuery()
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun showRequestedMoviesWhenViewCreated(searchTerm: String) {
+        downloadRequestedMovies(searchTerm)
+    }
+
+    private fun getSearchQuery() {
+        compositeDisposable.add(search_toolbar.onTextChangedObservable
+            .map { it.trim() }
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .observeOnMainThread()
+            .subscribe({
+                when (it.length) {
+                    0 -> {
+                        backToFeedFragmentWhenSearchIsEmpty()
+                    }
+                    else -> downloadRequestedMovies(it)
                 }
-            }
+            }, {
+
+            })
+        )
+    }
+
+    private fun downloadRequestedMovies(searchTerm: String) {
+        compositeDisposable.add(
+            MovieApiClient.apiClient.searchMoviesByQuery(query = searchTerm, language = language)
+                .map { moviesResponse ->
+                    moviesResponse.results
+                }
+                .map { movies ->
+                    movies.filter { it.posterPath != null }
+                }
+                .subscribeOn(Schedulers.io())
+                .observeOnMainThread()
+                .subscribe({ movies ->
+                    Timber.tag("TEST_OF_LOADING_DATA").d(movies.toString())
+                    adapter.clear()
+                    movies.map { movie ->
+                        val movieList = listOf(SearchItem(movie) {
+                            openMovieDetails(movie)
+                        })
+                        movies_recycler_view.adapter = adapter.apply { addAll(movieList) }
+                    }
+
+                }, {
+                    Timber.tag("TEST_OF_LOADING_DATA").d(it.toString())
+                })
+        )
+    }
+
+    private fun backToFeedFragmentWhenSearchIsEmpty() {
+        findNavController().navigate(R.id.search_dest)
+    }
+
+    private fun openMovieDetails(movie: Movie) {
+    }
+
+    override fun onStop() {
+        super.onStop()
+        search_toolbar.clear()
+        compositeDisposable.clear()
+        adapter.clear()
     }
 }

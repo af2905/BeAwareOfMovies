@@ -14,7 +14,7 @@ class MovieItem(private val content: Movie, private val onClick: (movie: Movie) 
     override fun bind(viewHolder: GroupieViewHolder, position: Int) {
         viewHolder.description.text = content.title
         viewHolder.movie_rating.rating = content.voteAverage.toFloat()
-        viewHolder.content.setOnClickListener { onClick.invoke(content) }
         content.posterPath?.let { PicassoClient.downloadImage(it, viewHolder.image_preview) }
+        viewHolder.content.setOnClickListener { onClick.invoke(content) }
     }
 }

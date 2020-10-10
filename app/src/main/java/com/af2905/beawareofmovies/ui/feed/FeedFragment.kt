@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
 import com.af2905.beawareofmovies.data.Movie
 import com.af2905.beawareofmovies.network.MovieApiClient
@@ -67,7 +68,7 @@ class FeedFragment : Fragment() {
             }
         }
         val bundle = Bundle()
-        bundle.putString("search", searchText)
+        bundle.putString(SEARCH_QUERY, searchText)
         findNavController().navigate(R.id.search_dest, bundle, options)
     }
 
