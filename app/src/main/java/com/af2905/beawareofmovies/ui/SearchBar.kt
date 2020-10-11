@@ -7,7 +7,11 @@ import android.view.View
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.core.view.isVisible
+import androidx.core.widget.doAfterTextChanged
 import com.af2905.beawareofmovies.R
+import com.af2905.beawareofmovies.ui.extensions.afterTextChanged
+import io.reactivex.Observable
+import io.reactivex.ObservableOnSubscribe
 import kotlinx.android.synthetic.main.search_toolbar.view.*
 
 class SearchBar @JvmOverloads constructor(
@@ -17,6 +21,14 @@ class SearchBar @JvmOverloads constructor(
 ) : FrameLayout(context, attrs, defStyle) {
 
     private val editText: EditText by lazy { search_edit_text }
+
+    val onTextChangedObservable by lazy {
+        Observable.create(ObservableOnSubscribe<String> { subscriber ->
+            editText.doAfterTextChanged { text ->
+                subscriber.onNext(text.toString())
+            }
+        })
+    }
 
     private var hint: String = ""
     private var isCancelVisible: Boolean = true

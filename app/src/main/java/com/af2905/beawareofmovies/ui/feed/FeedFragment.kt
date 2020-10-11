@@ -6,93 +6,52 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.af2905.beawareofmovies.BuildConfig
+import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
-import com.af2905.beawareofmovies.data.MockRepository
 import com.af2905.beawareofmovies.data.Movie
-import com.af2905.beawareofmovies.ui.afterTextChanged
+import com.af2905.beawareofmovies.network.MovieApiClient
+import com.af2905.beawareofmovies.ui.extensions.applySchedulers
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import io.reactivex.Single
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Function4
 import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.feed_header.*
-import kotlinx.android.synthetic.main.search_toolbar.view.*
-import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 class FeedFragment : Fragment() {
-
-    private val adapter by lazy {
-        GroupAdapter<GroupieViewHolder>()
-    }
+    private var compositeDisposable = CompositeDisposable()
+    private lateinit var language: String
+    private val adapter by lazy { GroupAdapter<GroupieViewHolder>() }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
         return inflater.inflate(R.layout.feed_fragment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        // Добавляем recyclerView
-        movies_recycler_view.layoutManager = LinearLayoutManager(context)
-        movies_recycler_view.adapter = adapter.apply { addAll(listOf()) }
-
-        search_toolbar.search_edit_text.afterTextChanged {
-            Timber.d(it.toString())
-            if (it.toString().length > 3) {
-                openSearch(it.toString())
-            }
-        }
-
-        // Используя Мок-репозиторий получаем фэйковый список фильмов
-        val moviesList = listOf(
-            MainCardContainer(
-                R.string.recommended,
-                MockRepository.getMovies().map {
-                    MovieItem(it) { movie ->
-                        openMovieDetails(
-                            movie
-                        )
-                    }
-                }.toList()
-            )
-        )
-
-        movies_recycler_view.adapter = adapter.apply { addAll(moviesList) }
-
-        // Используя Мок-репозиторий получаем фэйковый список фильмов
-        // Чтобы отобразить второй ряд фильмов
-        val newMoviesList = listOf(
-            MainCardContainer(
-                R.string.upcoming,
-                MockRepository.getMovies().map {
-                    MovieItem(it) { movie ->
-                        openMovieDetails(movie)
-                    }
-                }.toList()
-            )
-        )
-
-        adapter.apply { addAll(newMoviesList) }
-
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
     }
 
-    private fun openMovieDetails(movie: Movie) {
-        val options = navOptions {
-            anim {
-                enter = R.anim.slide_in_right
-                exit = R.anim.slide_out_left
-                popEnter = R.anim.slide_in_left
-                popExit = R.anim.slide_out_right
-            }
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        language = resources.getString(R.string.language)
+        movies_recycler_view.layoutManager = LinearLayoutManager(context)
+        getSearchQuery()
+        downloadMovies()
+    }
 
-        val bundle = Bundle()
-        bundle.putString("title", movie.title)
-        findNavController().navigate(R.id.movie_details_fragment, bundle, options)
+    private fun getSearchQuery() {
+        compositeDisposable.add(search_toolbar.onTextChangedObservable
+            .map { it.trim() }
+            .debounce(500, TimeUnit.MILLISECONDS)
+            .filter { it.isNotEmpty() }
+            .filter { it.length > 2 }
+            .applySchedulers()
+            .subscribe { openSearch(it) })
     }
 
     private fun openSearch(searchText: String) {
@@ -104,23 +63,66 @@ class FeedFragment : Fragment() {
                 popExit = R.anim.slide_out_right
             }
         }
-
         val bundle = Bundle()
-        bundle.putString("search", searchText)
+        bundle.putString(SEARCH_QUERY, searchText)
         findNavController().navigate(R.id.search_dest, bundle, options)
+    }
+
+    private fun openMovieDetails(movie: Movie) {
+        val options = navOptions {
+            anim {
+                enter = R.anim.slide_in_right
+                exit = R.anim.slide_out_left
+                popEnter = R.anim.slide_in_left
+                popExit = R.anim.slide_out_right
+            }
+        }
+        val bundle = Bundle()
+        bundle.putString("title", movie.title)
+        findNavController().navigate(R.id.movie_details_fragment, bundle, options)
+    }
+
+    private fun downloadMovies() {
+        val apiClient = MovieApiClient.apiClient
+        compositeDisposable.add(Single.zip(
+            apiClient.getPopularMovies(language = language),
+            apiClient.getNowPlayingMovies(language = language),
+            apiClient.getUpcomingMovies(language = language),
+            apiClient.getTopRatedMovies(language = language),
+            Function4 { t1, t2, t3, t4 ->
+                return@Function4 listOf(
+                    MainCardContainer(
+                        R.string.popular, t1.results.filter { movie -> movie.title != null }
+                            .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
+                    ),
+                    MainCardContainer(
+                        R.string.now_playing, t2.results.filter { movie -> movie.title != null }
+                            .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
+                    ),
+                    MainCardContainer(
+                        R.string.upcoming, t3.results.filter { movie -> movie.title != null }
+                            .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
+                    ),
+                    MainCardContainer(
+                        R.string.top_rated, t4.results.filter { movie -> movie.title != null }
+                            .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
+                    )
+                )
+            }
+        )
+            .applySchedulers()
+            .subscribe({
+                movies_recycler_view.adapter = adapter.apply { addAll(it) }
+            }, {
+
+            })
+        )
     }
 
     override fun onStop() {
         super.onStop()
         search_toolbar.clear()
-    }
-
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.main_menu, menu)
-    }
-
-    companion object {
-        const val API_KEY = BuildConfig.THE_MOVIE_DATABASE_API
+        compositeDisposable.clear()
+        adapter.clear()
     }
 }

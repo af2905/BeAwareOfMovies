@@ -1,12 +1,16 @@
 <resources>
     <string name="app_name">Будь в курсе фильмов</string>
 
+    <string name="language">ru-RU</string>
+    <string name="release_date">Год:</string>
+
     <string name="search_hint">Введите название</string>
 
     <string name="main_title">Что будете смотреть\nсегодня?</string>
-    <string name="recommended">Рекомендуем</string>
+    <string name="now_playing">Смотрят сейчас</string>
     <string name="popular">Популярные</string>
-    <string name="upcoming">Новинки</string>
+    <string name="upcoming">Ожидаемые</string>
+    <string name="top_rated">Лучшие</string>
 
     <string name="home">Главная</string>
 

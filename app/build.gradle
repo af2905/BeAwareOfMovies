@@ -6,6 +6,10 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
+def urlPropertiesFile = rootProject.file("url.properties")
+def urlProperties = new Properties()
+urlProperties.load(new FileReader(urlPropertiesFile))
+
 android {
     compileSdkVersion 30
     buildToolsVersion "29.0.3"
@@ -18,6 +22,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         buildConfigField 'String', 'THE_MOVIE_DATABASE_API', keystoreProperties['THE_MOVIE_DATABASE_API']
+        buildConfigField 'String', 'BASE_URL', urlProperties['BASE_URL']
     }
     buildTypes {
         release {
@@ -47,7 +52,6 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
     implementation "com.google.android.material:material:$materialVersion"
 
-
     // Architecture components
     implementation "androidx.core:core-ktx:$coreVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
@@ -65,13 +69,26 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
 
-
     // Picasso
-    implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'jp.wasabeef:picasso-transformations:2.2.1'
+    implementation "com.squareup.picasso:picasso:$rootProject.picassoVersion"
+    implementation "jp.wasabeef:picasso-transformations:$rootProject.picassoTransformationsVersion"
+
+    //Retrofit
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofitVersion"
+
+    //Okhttp
+    implementation "com.squareup.okhttp3:okhttp:$rootProject.okhttpVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.loggingInterceptorVersion"
+
+    //Rx
+    implementation "io.reactivex.rxjava2:rxkotlin:$rootProject.rxKotlinVersion"
+    implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxJavaVersion"
 
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerViewVersion"
-    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation "androidx.cardview:cardview:$rootProject.cardViewVersion"
 
     implementation "com.xwray:groupie:$rootProject.groupieVersion"
     implementation "com.xwray:groupie-kotlin-android-extensions:$rootProject.groupieVersion"
