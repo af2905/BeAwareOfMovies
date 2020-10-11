@@ -50,7 +50,7 @@
             android:maxLines="1"
             android:textColor="@color/white"
             android:textSize="12sp"
-            tools:text="Релиз: 01.01.2017"
+            tools:text="2017"
             tools:textColor="@color/white" />
 
         <TextView
