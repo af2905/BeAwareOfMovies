@@ -1,6 +1,7 @@
 package com.af2905.beawareofmovies.network
 
 import com.af2905.beawareofmovies.BuildConfig
+import com.af2905.beawareofmovies.data.MovieDetails
 import com.af2905.beawareofmovies.data.MoviesResponse
 import io.reactivex.Single
 import retrofit2.http.GET
@@ -51,7 +52,7 @@ interface MovieApiService {
         @Path("movie_id") movieId: String,
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
         @Query(QUERY_PARAM_LANGUAGE) language: String,
-    )
+    ): Single<MovieDetails>
 
     companion object {
         private const val QUERY_PARAM_API_KEY = "api_key"

@@ -39,10 +39,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="@dimen/material_margin_normal"
                         android:text="@string/watch"
+                        android:textAllCaps="false"
                         android:textColor="@color/textColorLight"
                         android:textSize="10sp"
                         app:strokeColor="@color/white"
-                        app:strokeWidth="2dp"
+                        app:strokeWidth="1dp"
                         tools:ignore="SmallSp" />
                 </LinearLayout>
 
@@ -96,10 +97,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/material_margin_small"
-                        android:layout_weight="5"
+                        android:layout_weight="4"
+                        android:text="@string/year"
                         android:textColor="@color/textColorLight"
-                        android:textStyle="bold"
-                        android:text="@string/year" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/movie_release_text_view"
@@ -120,10 +121,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/material_margin_small"
-                        android:layout_weight="5"
+                        android:layout_weight="4"
+                        android:text="@string/genre"
                         android:textColor="@color/textColorLight"
-                        android:textStyle="bold"
-                        android:text="@string/genre" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/movie_genre_text_view"
@@ -144,10 +145,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/material_margin_normal"
-                        android:layout_weight="5"
+                        android:layout_weight="4"
+                        android:text="@string/production_company"
                         android:textColor="@color/textColorLight"
-                        android:textStyle="bold"
-                        android:text="@string/production_company" />
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/production_company_text_view"

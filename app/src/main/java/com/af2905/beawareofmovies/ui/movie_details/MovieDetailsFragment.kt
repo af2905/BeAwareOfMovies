@@ -5,41 +5,58 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.af2905.beawareofmovies.Constants.MOVIE_ID
 import com.af2905.beawareofmovies.R
-
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.af2905.beawareofmovies.network.MovieApiClient
+import com.af2905.beawareofmovies.network.PicassoClient
+import com.af2905.beawareofmovies.ui.extensions.applySchedulers
+import com.af2905.beawareofmovies.ui.extensions.getYearFromReleaseDate
+import io.reactivex.disposables.Disposables
+import kotlinx.android.synthetic.main.movie_details_fragment.*
+import kotlinx.android.synthetic.main.movie_details_header.*
 
 class MovieDetailsFragment : Fragment() {
-
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var language: String
+    private var requestDisposable = Disposables.empty()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.movie_details_fragment, container, false)
     }
 
-    companion object {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        language = resources.getString(R.string.language)
+        val movieId = requireArguments().getInt(MOVIE_ID)
+        downloadMovieDetails(movieId)
+    }
 
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MovieDetailsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun downloadMovieDetails(movieId: Int) {
+        requestDisposable = MovieApiClient.apiClient.getMovieDetails(
+            movieId = movieId.toString(),
+            language = language
+        )
+            .applySchedulers()
+            .subscribe({
+                it.backdropPath?.let { url ->
+                    PicassoClient.downloadImage(
+                        url,
+                        backdrop_image_view
+                    )
                 }
-            }
+                movie_title_text_view.text = it.title
+                movie_rating.rating = it.voteAverage.toFloat()
+                overview_text_view.text = it.overview
+                movie_release_text_view.text = it.releaseDate?.getYearFromReleaseDate()
+
+            }, {
+            })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requestDisposable.dispose()
     }
 }

@@ -5,6 +5,9 @@
     android:id="@+id/content"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/material_margin_super_small"
+    android:layout_marginEnd="@dimen/material_margin_super_small"
+    android:layout_marginBottom="@dimen/material_margin_normal"
     android:orientation="vertical"
     tools:background="@color/blueDark"
     tools:ignore="RtlHardcoded">
@@ -24,11 +27,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/material_margin_super_small"
         android:ellipsize="end"
-        android:textColor="@color/white"
         android:lines="2"
+        android:textColor="@color/white"
         android:textSize="12sp"
         tools:text="Леонардо Ди Каприо"
         tools:textColor="@color/white" />
-
-
 </LinearLayout>

@@ -5,7 +5,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/list_background"
+        android:background="@color/blueDark"
         app:elevation="0dp">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -27,13 +27,16 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/material_margin_normal">
+                    android:layout_marginBottom="@dimen/material_margin_normal"
+                    android:background="@color/colorPrimary">
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/backdrop_image_view"
                         android:layout_width="match_parent"
                         android:layout_height="220dp"
                         android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/material_margin_small"
+                        android:layout_marginBottom="26dp"
                         android:scaleType="centerCrop"
                         tools:background="@color/white"
                         tools:srcCompat="@drawable/ic_avatar" />
@@ -59,6 +62,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:background="@color/blueDark"
                         android:orientation="horizontal">
 
                         <TextView
