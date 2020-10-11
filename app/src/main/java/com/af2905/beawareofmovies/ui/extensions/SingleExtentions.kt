@@ -1,4 +1,4 @@
-package com.af2905.beawareofmovies
+package com.af2905.beawareofmovies.ui.extensions
 
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -10,8 +10,7 @@ import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
 import com.af2905.beawareofmovies.data.Movie
 import com.af2905.beawareofmovies.network.MovieApiClient
-import com.af2905.beawareofmovies.observeOnMainThread
-import com.af2905.beawareofmovies.ui.observeOnMainThread
+import com.af2905.beawareofmovies.ui.extensions.observeOnMainThread
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.Single

@@ -9,8 +9,7 @@ import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
 import com.af2905.beawareofmovies.data.Movie
 import com.af2905.beawareofmovies.network.MovieApiClient
-import com.af2905.beawareofmovies.observeOnMainThread
-import com.af2905.beawareofmovies.ui.observeOnMainThread
+import com.af2905.beawareofmovies.ui.extensions.observeOnMainThread
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.disposables.CompositeDisposable
@@ -72,24 +71,18 @@ class SearchFragment : Fragment() {
     private fun downloadRequestedMovies(searchTerm: String) {
         compositeDisposable.add(
             MovieApiClient.apiClient.searchMoviesByQuery(query = searchTerm, language = language)
-                .map { moviesResponse ->
-                    moviesResponse.results
-                }
-                .map { movies ->
-                    movies.filter { it.posterPath != null }
-                }
+                .map { moviesResponse -> moviesResponse.results }
+                .map { movies -> movies.filter { it.posterPath != null } }
+                .map { movies -> movies.sortedByDescending { it.releaseDate } }
                 .subscribeOn(Schedulers.io())
                 .observeOnMainThread()
                 .subscribe({ movies ->
                     Timber.tag("TEST_OF_LOADING_DATA").d(movies.toString())
                     adapter.clear()
                     movies.map { movie ->
-                        val movieList = listOf(SearchItem(movie) {
-                            openMovieDetails(movie)
-                        })
-                        movies_recycler_view.adapter = adapter.apply { addAll(movieList) }
+                        val list = listOf(SearchItem(movie) { openMovieDetails(movie) })
+                        movies_recycler_view.adapter = adapter.apply { addAll(list) }
                     }
-
                 }, {
                     Timber.tag("TEST_OF_LOADING_DATA").d(it.toString())
                 })

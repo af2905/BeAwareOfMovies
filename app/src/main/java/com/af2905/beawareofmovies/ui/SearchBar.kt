@@ -9,6 +9,7 @@ import android.widget.FrameLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import com.af2905.beawareofmovies.R
+import com.af2905.beawareofmovies.ui.extensions.afterTextChanged
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
 import kotlinx.android.synthetic.main.search_toolbar.view.*
