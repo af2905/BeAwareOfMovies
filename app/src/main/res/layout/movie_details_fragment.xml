@@ -77,16 +77,14 @@
                     tools:text="Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/items_container"
+                    android:id="@+id/actors_recycler_view"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/material_margin_small"
-                    android:orientation="horizontal"
-                    android:visibility="visible"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never"
+                    android:scrollbars="vertical"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:ignore="RtlSymmetry"
-                    tools:itemCount="5"
-                    tools:listitem="@layout/item_actor_with_text" />
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"

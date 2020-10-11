@@ -1,6 +1,7 @@
 package com.af2905.beawareofmovies.network
 
 import com.af2905.beawareofmovies.BuildConfig
+import com.af2905.beawareofmovies.data.ActorsResponse
 import com.af2905.beawareofmovies.data.MovieDetails
 import com.af2905.beawareofmovies.data.MoviesResponse
 import io.reactivex.Single
@@ -53,6 +54,14 @@ interface MovieApiService {
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
         @Query(QUERY_PARAM_LANGUAGE) language: String,
     ): Single<MovieDetails>
+
+    //movie/479259/credits?api_key=<<api_key>>&language=ru-RU
+    @GET("movie/{movie_id}/credits")
+    fun getMovieActors(
+        @Path("movie_id") movieId: String,
+        @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
+        @Query(QUERY_PARAM_LANGUAGE) language: String,
+    ): Single<ActorsResponse>
 
     companion object {
         private const val QUERY_PARAM_API_KEY = "api_key"
