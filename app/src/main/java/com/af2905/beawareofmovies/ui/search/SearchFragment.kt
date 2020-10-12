@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.af2905.beawareofmovies.Constants
 import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
 import com.af2905.beawareofmovies.data.Movie
@@ -15,7 +17,6 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.feed_header.*
 import kotlinx.android.synthetic.main.fragment_search.*
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class SearchFragment : Fragment() {
@@ -56,13 +57,10 @@ class SearchFragment : Fragment() {
             .applySchedulers()
             .subscribe({
                 when (it.length) {
-                    0 -> {
-                        backToFeedFragmentWhenSearchIsEmpty()
-                    }
+                    0 -> downloadPopularMoviesByDefault()
                     else -> downloadRequestedMovies(it)
                 }
             }, {
-
             })
         )
     }
@@ -75,23 +73,44 @@ class SearchFragment : Fragment() {
                 .map { movies -> movies.sortedByDescending { it.releaseDate } }
                 .applySchedulers()
                 .subscribe({ movies ->
-                    Timber.tag("TEST_OF_LOADING_DATA").d(movies.toString())
                     adapter.clear()
                     movies.map { movie ->
                         val list = listOf(SearchItem(movie) { openMovieDetails(movie) })
                         movies_recycler_view.adapter = adapter.apply { addAll(list) }
                     }
                 }, {
-                    Timber.tag("TEST_OF_LOADING_DATA").d(it.toString())
                 })
         )
     }
 
-    private fun backToFeedFragmentWhenSearchIsEmpty() {
-        findNavController().navigate(R.id.search_dest)
+    private fun downloadPopularMoviesByDefault() {
+        compositeDisposable.add(MovieApiClient.apiClient.getPopularMovies(language = language)
+            .map { moviesResponse -> moviesResponse.results }
+            .map { movies -> movies.filter { it.posterPath != null } }
+            .applySchedulers()
+            .subscribe({ movies ->
+                adapter.clear()
+                movies.map { movie ->
+                    val list = listOf(SearchItem(movie) { openMovieDetails(movie) })
+                    movies_recycler_view.adapter = adapter.apply { addAll(list) }
+                }
+            }, {
+            })
+        )
     }
 
     private fun openMovieDetails(movie: Movie) {
+        val options = navOptions {
+            anim {
+                enter = R.anim.slide_in_right
+                exit = R.anim.slide_out_left
+                popEnter = R.anim.slide_in_left
+                popExit = R.anim.slide_out_right
+            }
+        }
+        val bundle = Bundle()
+        bundle.putInt(Constants.MOVIE_ID, movie.id)
+        findNavController().navigate(R.id.movie_details_fragment, bundle, options)
     }
 
     override fun onStop() {
