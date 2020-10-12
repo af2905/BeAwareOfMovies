@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.af2905.beawareofmovies.Constants.MOVIE_ID
 import com.af2905.beawareofmovies.R
+import com.af2905.beawareofmovies.data.MovieDetails
 import com.af2905.beawareofmovies.network.MovieApiClient
 import com.af2905.beawareofmovies.network.PicassoClient
 import com.af2905.beawareofmovies.ui.extensions.applySchedulers
@@ -40,20 +41,16 @@ class MovieDetailsFragment : Fragment() {
 
     private fun downloadMovieDetails(movieId: Int) {
         val apiClient = MovieApiClient.apiClient
-        var movieTitle = ""
-        var movieRating = 0.0
-        var movieOverview = ""
-        var movieRelease = ""
-        var movieUrl = ""
+        var movieDetails: MovieDetails? = null
+        val companies: MutableList<String> = mutableListOf()
+        val genres: MutableList<String> = mutableListOf()
         requestDisposable = Single.zip(
             apiClient.getMovieDetails(movieId = movieId.toString(), language = language),
             apiClient.getMovieActors(movieId = movieId.toString(), language = language),
             BiFunction { t1, t2 ->
-                movieTitle = t1.title.toString()
-                movieRating = t1.voteAverage
-                movieOverview = t1.overview.toString()
-                movieRelease = t1.releaseDate?.getYearFromReleaseDate().toString()
-                movieUrl = t1.backdropPath.toString()
+                movieDetails = t1
+                t1.productionCompanies?.map { it.name?.let { name -> companies.add(name) } }
+                t1.genres?.map { it.name?.let { name -> genres.add(name) } }
                 return@BiFunction listOf(t2.actors
                     ?.filter { actor -> actor.profilePath != null }
                     ?.map { actor -> ActorItem(actor) }
@@ -62,14 +59,26 @@ class MovieDetailsFragment : Fragment() {
         )
             .applySchedulers()
             .subscribe({
-                movie_title_text_view.text = movieTitle
-                movie_rating.rating = movieRating.toFloat()
-                overview_text_view.text = movieOverview
-                movie_release_text_view.text = movieRelease
-                PicassoClient.downloadImage(movieUrl, backdrop_image_view)
+                movieDetails?.let {
+                    movie_title_text_view.text = it.title
+                    movie_rating.rating = it.voteAverage.toFloat()
+                    overview_text_view.text = it.overview
+                    movie_release_text_view.text = it.releaseDate?.getYearFromReleaseDate()
+                    it.backdropPath?.let { url ->
+                        PicassoClient.downloadImage(url, backdrop_image_view)
+                    }
+                }
+                if (companies.isNotEmpty()) {
+                    production_company_text_view.text = companies.joinToString(separator = ", ")
+                } else {
+                    production_company_title.visibility = View.GONE
+                    production_company_text_view.visibility = View.GONE
+                }
+                movie_genre_text_view.text = genres.joinToString(separator = ", ")
                 actors_recycler_view.adapter = adapter.apply { addAll(it) }
-            },
-                {})
+            }, {
+
+            })
     }
 
     override fun onStop() {

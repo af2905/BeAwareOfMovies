@@ -35,8 +35,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="220dp"
                         android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/material_margin_small"
-                        android:layout_marginBottom="26dp"
+
+
                         android:scaleType="centerCrop"
                         tools:background="@color/white"
                         tools:srcCompat="@drawable/ic_avatar" />
@@ -61,32 +61,81 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/blueDark"
-                        android:orientation="horizontal">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/movie_title_text_view"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="?attr/actionBarSize"
-                            android:layout_marginLeft="@dimen/material_margin_normal"
-                            android:layout_marginRight="@dimen/material_margin_normal"
-                            android:layout_weight="1"
-                            android:gravity="start|center"
-                            android:lines="2"
-                            android:textColor="@color/textColorLight"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            tools:text="Звездные войны" />
+                            android:layout_height="match_parent"
+                            android:background="@color/blueDark"
+                            android:orientation="horizontal">
 
-                        <ImageView
+                            <TextView
+                                android:id="@+id/movie_title_text_view"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="@dimen/material_margin_normal"
+                                android:layout_marginRight="@dimen/material_margin_normal"
+                                android:layout_weight="1"
+                                android:gravity="start|center"
+                                android:lines="2"
+                                android:textColor="@color/textColorLight"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                tools:text="Звездные войны" />
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end|center"
+                                android:layout_weight="5"
+                                android:contentDescription="@string/full_hd"
+                                android:src="@drawable/ic_4k_fullhd" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="bottom"
-                            android:layout_margin="@dimen/material_margin_normal"
-                            android:layout_weight="5"
-                            android:contentDescription="@string/full_hd"
-                            android:src="@drawable/ic_4k_fullhd" />
+                            android:layout_marginLeft="@dimen/material_margin_normal"
+                            android:layout_marginRight="@dimen/material_margin_normal"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="horizontal">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/watch_button"
+                                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="@dimen/material_margin_normal"
+                                    android:text="@string/watch"
+                                    android:textAllCaps="false"
+                                    android:textColor="@color/textColorLight"
+                                    android:textSize="10sp"
+                                    app:strokeColor="@color/white"
+                                    app:strokeWidth="1dp"
+                                    tools:ignore="SmallSp" />
+                            </LinearLayout>
+
+                            <androidx.appcompat.widget.AppCompatRatingBar
+                                android:id="@+id/movie_rating"
+                                style="@style/Base.Widget.AppCompat.RatingBar.Small"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="end|center"
+                                android:isIndicator="true"
+                                android:minWidth="@dimen/material_margin_normal"
+                                android:numStars="5"
+                                android:progressBackgroundTint="@color/colorControlNormal"
+                                android:stepSize="0.5"
+                                tools:rating="3.3" />
+
+
+                        </LinearLayout>
                     </LinearLayout>
                 </androidx.appcompat.widget.Toolbar>
             </LinearLayout>

@@ -17,146 +17,99 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/material_margin_normal"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/overview_text_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/material_margin_small"
+                android:lineSpacingMultiplier="1.5"
+                android:textColor="@color/textColorLight"
+                tools:text="Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/actors_recycler_view"
+                android:layout_marginBottom="@dimen/material_margin_small"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:scrollbars="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/material_margin_normal"
-                android:layout_marginEnd="@dimen/material_margin_normal"
                 android:orientation="horizontal">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                <TextView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/material_margin_small"
+                    android:layout_weight="4"
+                    android:text="@string/year"
+                    android:textColor="@color/textColorLight"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/movie_release_text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/material_margin_small"
                     android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/watch_button"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/material_margin_normal"
-                        android:text="@string/watch"
-                        android:textAllCaps="false"
-                        android:textColor="@color/textColorLight"
-                        android:textSize="10sp"
-                        app:strokeColor="@color/white"
-                        app:strokeWidth="1dp"
-                        tools:ignore="SmallSp" />
-                </LinearLayout>
-
-                <androidx.appcompat.widget.AppCompatRatingBar
-                    android:id="@+id/movie_rating"
-                    style="@style/Base.Widget.AppCompat.RatingBar.Small"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center"
-                    android:isIndicator="true"
-                    android:minWidth="@dimen/material_margin_normal"
-                    android:numStars="5"
-                    android:progressBackgroundTint="@color/colorControlNormal"
-                    android:stepSize="0.5"
-                    tools:rating="3.3" />
+                    android:textColor="@color/textColorLight"
+                    tools:text="2020" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/material_margin_normal"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/overview_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/material_margin_small"
-                    android:lineSpacingMultiplier="1.5"
+                    android:layout_weight="4"
+                    android:text="@string/genre"
                     android:textColor="@color/textColorLight"
-                    tools:text="Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма Какое-то описание фильма" />
+                    android:textStyle="bold" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/actors_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:overScrollMode="never"
-                    android:scrollbars="vertical"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                    />
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/movie_genre_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginBottom="@dimen/material_margin_small"
+                    android:layout_weight="1"
+                    android:textColor="@color/textColorLight"
+                    tools:text="боевик, приключение, фантастика" />
+            </LinearLayout>
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/material_margin_small"
-                        android:layout_weight="4"
-                        android:text="@string/year"
-                        android:textColor="@color/textColorLight"
-                        android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                    <TextView
-                        android:id="@+id/movie_release_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/material_margin_small"
-                        android:layout_weight="1"
-                        android:textColor="@color/textColorLight"
-                        tools:text="2020" />
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/production_company_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginBottom="@dimen/material_margin_normal"
+                    android:layout_weight="4"
+                    android:text="@string/production_company"
+                    android:textColor="@color/textColorLight"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/material_margin_small"
-                        android:layout_weight="4"
-                        android:text="@string/genre"
-                        android:textColor="@color/textColorLight"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/movie_genre_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/material_margin_small"
-                        android:layout_weight="1"
-                        android:textColor="@color/textColorLight"
-                        tools:text="боевик, приключение, фантастика" />
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/production_company_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/material_margin_normal"
-                        android:layout_weight="4"
-                        android:text="@string/production_company"
-                        android:textColor="@color/textColorLight"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/production_company_text_view"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/material_margin_normal"
-                        android:layout_weight="1"
-                        android:textColor="@color/textColorLight"
-                        tools:text="Warner Bros." />
-                </LinearLayout>
+                    android:layout_marginBottom="@dimen/material_margin_normal"
+                    android:layout_weight="1"
+                    android:textColor="@color/textColorLight"
+                    tools:text="Warner Bros." />
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
