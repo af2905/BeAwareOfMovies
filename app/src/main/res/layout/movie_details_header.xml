@@ -11,7 +11,7 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:minHeight="100dp"
+            android:minHeight="@dimen/collapsing_toolbar_min_height"
             app:collapsedTitleTextAppearance="@style/AppTheme.Title.Collapsed"
             app:expandedTitleTextAppearance="@style/AppTheme.Title.Expanded"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -33,22 +33,21 @@
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/backdrop_image_view"
                         android:layout_width="match_parent"
-                        android:layout_height="220dp"
+                        android:layout_height="@dimen/backdrop_height"
                         android:layout_gravity="center"
-
-
                         android:scaleType="centerCrop"
                         tools:background="@color/white"
                         tools:srcCompat="@drawable/ic_avatar" />
 
-                    <ImageView
-                        android:id="@+id/heart_image_view"
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/heart_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_margin="@dimen/material_margin_normal"
+                        android:button="@drawable/ic_heart_selector"
                         android:contentDescription="@string/like"
-                        android:src="@drawable/ic_heart_outline" />
+                        app:useMaterialThemeColors="false" />
                 </FrameLayout>
 
                 <androidx.appcompat.widget.Toolbar
