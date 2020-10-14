@@ -3,7 +3,7 @@
 
     <string name="language">ru-RU</string>
     <string name="release_date">Год:</string>
-    <string name="actors">Актеры</string>
+    <string name="actors">Актёры</string>
 
     <string name="search_hint">Введите название</string>
 

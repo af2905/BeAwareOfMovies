@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.af2905.beawareofmovies.Constants.COMMA_SEPARATOR
 import com.af2905.beawareofmovies.Constants.MOVIE_ID
 import com.af2905.beawareofmovies.R
 import com.af2905.beawareofmovies.data.MovieDetails
@@ -69,12 +70,13 @@ class MovieDetailsFragment : Fragment() {
                     }
                 }
                 if (companies.isNotEmpty()) {
-                    production_company_text_view.text = companies.joinToString(separator = ", ")
+                    production_company_text_view.text =
+                        companies.joinToString(separator = COMMA_SEPARATOR)
                 } else {
                     production_company_title.visibility = View.GONE
                     production_company_text_view.visibility = View.GONE
                 }
-                movie_genre_text_view.text = genres.joinToString(separator = ", ")
+                movie_genre_text_view.text = genres.joinToString(separator = COMMA_SEPARATOR)
                 actors_recycler_view.adapter = adapter.apply { addAll(it) }
             }, {
 
