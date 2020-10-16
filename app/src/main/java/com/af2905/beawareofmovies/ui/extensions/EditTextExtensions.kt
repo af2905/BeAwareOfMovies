@@ -1,8 +1,0 @@
-package com.af2905.beawareofmovies.ui.extensions
-
-import android.text.Editable
-import android.widget.EditText
-import androidx.core.widget.addTextChangedListener
-
-fun EditText.afterTextChanged(action: (s: Editable?) -> Unit) =
-    addTextChangedListener(afterTextChanged = action)

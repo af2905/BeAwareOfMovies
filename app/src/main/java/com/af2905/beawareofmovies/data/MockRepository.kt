@@ -1,5 +1,7 @@
 package com.af2905.beawareofmovies.data
 
+import com.af2905.beawareofmovies.data.repository.database.dto.Movie
+
 object MockRepository {
 
     fun getMovies(): List<Movie> {
