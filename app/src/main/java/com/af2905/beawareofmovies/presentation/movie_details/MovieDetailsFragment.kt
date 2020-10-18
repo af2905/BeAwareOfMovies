@@ -8,9 +8,9 @@ import androidx.fragment.app.Fragment
 import com.af2905.beawareofmovies.Constants.COMMA_SEPARATOR
 import com.af2905.beawareofmovies.Constants.MOVIE_ID
 import com.af2905.beawareofmovies.R
-import com.af2905.beawareofmovies.data.repository.database.dto.MovieDetails
-import com.af2905.beawareofmovies.data.repository.network.MovieApiClient
-import com.af2905.beawareofmovies.data.repository.network.PicassoClient
+import com.af2905.beawareofmovies.data.dto.MovieDetailsDto
+import com.af2905.beawareofmovies.data.network.MovieApiClient
+import com.af2905.beawareofmovies.data.network.PicassoClient
 import com.af2905.beawareofmovies.util.extensions.applySchedulers
 import com.af2905.beawareofmovies.util.extensions.getYearFromReleaseDate
 import com.xwray.groupie.GroupAdapter
@@ -42,7 +42,7 @@ class MovieDetailsFragment : Fragment() {
 
     private fun downloadMovieDetails(movieId: Int) {
         val apiClient = MovieApiClient.apiClient
-        var movieDetails: MovieDetails? = null
+        var movieDetails: MovieDetailsDto? = null
         val companies: MutableList<String> = mutableListOf()
         val genres: MutableList<String> = mutableListOf()
         requestDisposable = Single.zip(

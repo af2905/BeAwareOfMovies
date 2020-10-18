@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.af2905.beawareofmovies.Constants
 import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
-import com.af2905.beawareofmovies.data.repository.database.dto.Movie
-import com.af2905.beawareofmovies.data.repository.network.MovieApiClient
+import com.af2905.beawareofmovies.data.dto.MovieDto
+import com.af2905.beawareofmovies.data.network.MovieApiClient
 import com.af2905.beawareofmovies.util.extensions.applySchedulers
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -99,7 +99,7 @@ class SearchFragment : Fragment() {
         )
     }
 
-    private fun openMovieDetails(movie: Movie) {
+    private fun openMovieDetails(movie: MovieDto) {
         val options = navOptions {
             anim {
                 enter = R.anim.slide_in_right

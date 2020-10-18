@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import com.af2905.beawareofmovies.R
-import com.af2905.beawareofmovies.data.MockRepository
+import com.af2905.beawareofmovies.data.repository.MockRepository
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import kotlinx.android.synthetic.main.fragment_watchlist.*

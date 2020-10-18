@@ -1,14 +1,14 @@
 package com.af2905.beawareofmovies.presentation.movie_details
 
 import com.af2905.beawareofmovies.R
-import com.af2905.beawareofmovies.data.repository.database.dto.Actor
-import com.af2905.beawareofmovies.data.repository.network.PicassoClient
+import com.af2905.beawareofmovies.data.dto.ActorDto
+import com.af2905.beawareofmovies.data.network.PicassoClient
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import com.xwray.groupie.kotlinandroidextensions.Item
 import kotlinx.android.synthetic.main.item_actor_with_text.*
 
 
-class ActorItem (private val content: Actor) : Item() {
+class ActorItem (private val content: ActorDto) : Item() {
 
     override fun getLayout() = R.layout.item_actor_with_text
 
