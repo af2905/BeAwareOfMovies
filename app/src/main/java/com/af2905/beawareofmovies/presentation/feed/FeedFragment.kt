@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
 import com.af2905.beawareofmovies.data.database.MovieDatabase
-import com.af2905.beawareofmovies.data.repository.NowPlayingMoviesRepository
+import com.af2905.beawareofmovies.data.repository.RemoteRepository
 import com.af2905.beawareofmovies.data.vo.MovieVo
 import com.af2905.beawareofmovies.util.extensions.applySchedulers
 import com.xwray.groupie.GroupAdapter
@@ -84,8 +84,8 @@ class FeedFragment : Fragment() {
 
     private fun testDownloadMovies() {
         val database = MovieDatabase.get(requireContext())
-        val repository = NowPlayingMoviesRepository(database)
-        compositeDisposable.add(repository.getMoviesFromNet().map {
+        val repository = RemoteRepository(database)
+        compositeDisposable.add(repository.getMovies().map {
             MainCardContainer(
                 R.string.popular, it.filter { movie -> movie.title != null }
                     .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()

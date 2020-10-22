@@ -6,10 +6,12 @@ object Constants {
     const val COMMA_SEPARATOR = ", "
     const val LANGUAGE_DEFAULT = "en-US"
 
-    const val TABLE_NAME_NOW_PLAYING_MOVIES = "now_playing_movies"
-    const val TABLE_NAME_POPULAR_MOVIES = "popular_movies"
-    const val TABLE_NAME_TOP_RATED_MOVIES = "top_rated_movies"
-    const val TABLE_NAME_UPCOMING_MOVIES = "upcoming_movies"
-    const val TABLE_NAME_USER_LIKED_MOVIES = "user_liked_movies"
-    const val TABLE_NAME_USER_WATCH_MOVIES = "user_watch_movies"
+    const val TABLE_NAME_MOVIES = "movies"
+
+    const val CATEGORY_NOW_PLAYING_MOVIES = "now_playing"
+    const val CATEGORY_POPULAR_MOVIES = "popular"
+    const val CATEGORY_TOP_RATED_MOVIES = "top_rated"
+    const val CATEGORY_UPCOMING_MOVIES = "upcoming"
+    const val CATEGORY_USER_LIKED_MOVIES = "user_liked"
+    const val CATEGORY_USER_WATCH_MOVIES = "user_watch"
 }

@@ -5,14 +5,20 @@ import com.af2905.beawareofmovies.data.dto.MoviesResponseDto
 import com.af2905.beawareofmovies.data.vo.MovieVo
 
 object MovieMapper {
-    fun toValueObject(dto: MoviesResponseDto): List<MovieVo> {
-        return if (dto.results != null) dto.results.map { toValueObject(it) } else emptyList()
+    fun toValueObject(dto: MoviesResponseDto, category: String): List<MovieVo> {
+        return if (dto.results != null) dto.results.map {
+            toValueObject(it, category)
+        } else emptyList()
     }
 
-    private fun toValueObject(dto: MovieDto): MovieVo {
+    private fun toValueObject(dto: MovieDto, category: String): MovieVo {
         with(dto) {
             val movie = MovieVo(
-                id = id, title = title, overview = overview, releaseDate = releaseDate
+                id = id,
+                title = title,
+                overview = overview,
+                releaseDate = releaseDate,
+                category = category
             )
             movie.voteAverage = voteAverage
             movie.posterPath = posterPath

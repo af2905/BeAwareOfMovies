@@ -7,7 +7,8 @@ data class MovieVo(
     val id: Int? = null,
     val title: String? = null,
     val overview: String? = null,
-    val releaseDate: String? = null
+    val releaseDate: String? = null,
+    var category: String
 ) {
     var voteAverage: Double = 0.0
         get() = field.fiveStarRating()
