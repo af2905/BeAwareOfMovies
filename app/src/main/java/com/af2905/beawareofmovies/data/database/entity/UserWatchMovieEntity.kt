@@ -2,8 +2,9 @@ package com.af2905.beawareofmovies.data.database.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.af2905.beawareofmovies.Constants.TABLE_NAME_USER_WATCH_MOVIES
 
-@Entity(tableName = "user_watch_movies")
+@Entity(tableName = TABLE_NAME_USER_WATCH_MOVIES)
 data class UserWatchMovieEntity(
     @PrimaryKey
     val id: Int,

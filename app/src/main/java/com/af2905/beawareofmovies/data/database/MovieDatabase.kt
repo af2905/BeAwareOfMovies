@@ -7,6 +7,8 @@ import androidx.room.RoomDatabase
 import com.af2905.beawareofmovies.data.database.dao.*
 import com.af2905.beawareofmovies.data.database.entity.*
 
+private const val DATABASE_NAME = "MovieDatabase"
+
 @Database(
     entities = [
         NowPlayingMovieEntity::class,
@@ -33,7 +35,7 @@ abstract class MovieDatabase : RoomDatabase() {
             if (instance == null) {
                 instance = Room.databaseBuilder(
                     context.applicationContext,
-                    MovieDatabase::class.java, "MovieDatabase"
+                    MovieDatabase::class.java, DATABASE_NAME
                 ).build()
             }
             return instance!!
