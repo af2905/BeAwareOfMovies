@@ -14,7 +14,7 @@ interface MovieApiService {
     @GET("search/movie")
     fun searchMoviesByQuery(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
-        @Query(QUERY_PARAM_LANGUAGE) language: String,
+        @Query(QUERY_PARAM_LANGUAGE) language: String? = null,
         @Query(QUERY_PARAM_QUERY) query: String,
         @Query(QUERY_PARAM_INCLUDE_ADULT) adult: String = INCLUDE_ADULT_DEFAULT
     ): Single<MoviesResponseDto>
@@ -23,28 +23,28 @@ interface MovieApiService {
     @GET("movie/popular")
     fun getPopularMovies(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
-        @Query(QUERY_PARAM_LANGUAGE) language: String,
+        @Query(QUERY_PARAM_LANGUAGE) language: String? = null,
     ): Single<MoviesResponseDto>
 
     //movie/now_playing?api_key=<<api_key>>&language=ru-RU&page=1
     @GET("movie/now_playing")
     fun getNowPlayingMovies(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
-        @Query(QUERY_PARAM_LANGUAGE) language: String,
+        @Query(QUERY_PARAM_LANGUAGE) language: String? = null
     ): Single<MoviesResponseDto>
 
     //movie/upcoming?api_key=<<api_key>>&language=ru-RU
     @GET("movie/upcoming")
     fun getUpcomingMovies(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
-        @Query(QUERY_PARAM_LANGUAGE) language: String,
+        @Query(QUERY_PARAM_LANGUAGE) language: String? = null,
     ): Single<MoviesResponseDto>
 
     //movie/top_rated?api_key=<<api_key>>&language=ru-RU
     @GET("movie/top_rated")
     fun getTopRatedMovies(
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
-        @Query(QUERY_PARAM_LANGUAGE) language: String,
+        @Query(QUERY_PARAM_LANGUAGE) language: String? = null,
     ): Single<MoviesResponseDto>
 
     //movie/{movie_id}?api_key=<<api_key>>&language=en-US
@@ -52,7 +52,7 @@ interface MovieApiService {
     fun getMovieDetails(
         @Path("movie_id") movieId: String,
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
-        @Query(QUERY_PARAM_LANGUAGE) language: String,
+        @Query(QUERY_PARAM_LANGUAGE) language: String? = null,
     ): Single<MovieDetailsDto>
 
     //movie/479259/credits?api_key=<<api_key>>&language=ru-RU
@@ -60,7 +60,7 @@ interface MovieApiService {
     fun getMovieActors(
         @Path("movie_id") movieId: String,
         @Query(QUERY_PARAM_API_KEY) apiKey: String = API_KEY,
-        @Query(QUERY_PARAM_LANGUAGE) language: String,
+        @Query(QUERY_PARAM_LANGUAGE) language: String? = null,
     ): Single<ActorsResponseDto>
 
     companion object {
