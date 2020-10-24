@@ -7,7 +7,7 @@ object MovieVoToMovieEntity {
     fun toMovieEntity(valueObjects: List<MovieVo>): List<MovieEntity> {
         return valueObjects.map { movie ->
             MovieEntity(
-                id = movie.id ?: -1,
+                id = movie.id,
                 title = movie.title,
                 overview = movie.overview,
                 releaseDate = movie.releaseDate,

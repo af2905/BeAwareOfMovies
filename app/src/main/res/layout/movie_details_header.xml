@@ -63,6 +63,12 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
+                        <ProgressBar
+                            android:id="@+id/progress_bar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center" />
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -84,6 +90,7 @@
                                 tools:text="Звездные войны" />
 
                             <ImageView
+                                android:id="@+id/full_hd_image_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="end|center"
@@ -132,8 +139,6 @@
                                 android:progressBackgroundTint="@color/colorControlNormal"
                                 android:stepSize="0.5"
                                 tools:rating="3.3" />
-
-
                         </LinearLayout>
                     </LinearLayout>
                 </androidx.appcompat.widget.Toolbar>
