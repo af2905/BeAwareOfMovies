@@ -7,13 +7,17 @@ import com.af2905.beawareofmovies.data.network.MovieApiClient
 import com.af2905.beawareofmovies.data.vo.MovieVo
 import com.af2905.beawareofmovies.domain.repository.MovieRepository
 import com.af2905.beawareofmovies.util.extensions.addMoviesInDatabaseAndReturn
-import io.reactivex.Single
+import io.reactivex.Observable
 
 class PopularRemoteRepository(private val database: MovieDatabase) : MovieRepository<MovieVo> {
-    override fun getMovies(): Single<List<MovieVo>> {
+    override fun getMovies(): Observable<List<MovieVo>> {
         return MovieApiClient.apiClient
-            .getPopularMovies()
+            .getNowPlayingMovies()
             .map { MovieMapper.toValueObject(it, CATEGORY_POPULAR_MOVIES) }
             .addMoviesInDatabaseAndReturn(database)
+            .toObservable()
+            .map {
+                return@map it
+            }
     }
 }

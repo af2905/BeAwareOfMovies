@@ -15,7 +15,7 @@ fun <T> Single<T>.applySchedulers(): Single<T> {
 fun Single<List<MovieVo>>.addMoviesInDatabaseAndReturn(database: MovieDatabase): Single<List<MovieVo>> {
     return this.map {
         val movies = MovieVoToMovieEntity.toMovieEntity(it)
-        database.movieDao().insertAll(movies)
+        database.movieDao().save(movies)
         return@map it
     }
 }

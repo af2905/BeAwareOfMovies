@@ -17,6 +17,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.feed_header.*
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class FeedFragment : Fragment() {
@@ -85,13 +86,20 @@ class FeedFragment : Fragment() {
     private fun testDownloadMovies() {
         val database = MovieDatabase.get(requireContext())
         val repository = NowPlayingRemoteRepository(database)
-        compositeDisposable.add(repository.getMovies().map {
-            MainCardContainer(
-                R.string.popular, it.filter { movie -> movie.title != null }
-                    .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
-            )
-        }
-            .applySchedulers()
+        /*val localRepository = NowPlayingLocalRepository(database)
+        val remoteRepository = NowPlayingRemoteRepository(database)
+        val nowPlayingMoviesUseCase = NowPlayingMoviesUseCase(
+            localRepository = localRepository,
+            remoteRepository = remoteRepository
+        )*/
+        compositeDisposable.add(repository.getMovies().applySchedulers()
+            .map {
+                Timber.tag("TEST_OF_LOADING_DATA").d(it.toString())
+                MainCardContainer(
+                    R.string.now_playing, it.filter { movie -> movie.title != null }
+                        .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
+                )
+            }
             .subscribe(
                 {
                     movies_recycler_view.adapter = adapter.apply { add(it) }

@@ -4,7 +4,7 @@ import com.af2905.beawareofmovies.data.database.entity.MovieEntity
 import com.af2905.beawareofmovies.data.vo.MovieVo
 
 object MovieEntityToMovieVo {
-    fun toMovieVo(entities: List<MovieEntity>): List<MovieVo> {
+    fun toValueObject(entities: List<MovieEntity>): List<MovieVo> {
         return entities.map {
             val movie = MovieVo(
                 id = it.id,
