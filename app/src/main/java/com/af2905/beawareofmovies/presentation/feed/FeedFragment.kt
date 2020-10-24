@@ -6,18 +6,22 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.af2905.beawareofmovies.Constants.MOVIE_ID
 import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
-import com.af2905.beawareofmovies.data.database.MovieDatabase
 import com.af2905.beawareofmovies.data.repository.remote_repository.NowPlayingRemoteRepository
+import com.af2905.beawareofmovies.data.repository.remote_repository.PopularRemoteRepository
+import com.af2905.beawareofmovies.data.repository.remote_repository.TopRatedRemoteRepository
+import com.af2905.beawareofmovies.data.repository.remote_repository.UpcomingRemoteRepository
 import com.af2905.beawareofmovies.data.vo.MovieVo
 import com.af2905.beawareofmovies.util.extensions.applySchedulers
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.functions.Function4
 import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.feed_header.*
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class FeedFragment : Fragment() {
@@ -38,11 +42,11 @@ class FeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        progress_bar.visibility = View.VISIBLE
         language = resources.getString(R.string.language)
         movies_recycler_view.layoutManager = LinearLayoutManager(context)
         getSearchQuery()
-        //downloadMovies()
-        testDownloadMovies()
+        downloadMovies()
     }
 
     private fun getSearchQuery() {
@@ -79,72 +83,55 @@ class FeedFragment : Fragment() {
             }
         }
         val bundle = Bundle()
-        //bundle.putInt(MOVIE_ID, movie.id)
+        bundle.putInt(MOVIE_ID, movie.id)
         findNavController().navigate(R.id.movie_details_fragment, bundle, options)
     }
 
-    private fun testDownloadMovies() {
-        val database = MovieDatabase.get(requireContext())
-        val repository = NowPlayingRemoteRepository(database)
-        /*val localRepository = NowPlayingLocalRepository(database)
-        val remoteRepository = NowPlayingRemoteRepository(database)
-        val nowPlayingMoviesUseCase = NowPlayingMoviesUseCase(
-            localRepository = localRepository,
-            remoteRepository = remoteRepository
-        )*/
-        compositeDisposable.add(repository.getMovies().applySchedulers()
-            .map {
-                Timber.tag("TEST_OF_LOADING_DATA").d(it.toString())
-                MainCardContainer(
-                    R.string.now_playing, it.filter { movie -> movie.title != null }
-                        .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
-                )
-            }
-            .subscribe(
-                {
-                    movies_recycler_view.adapter = adapter.apply { add(it) }
-                },
-                {}
-            ))
+    private fun downloadMovies() {
+        compositeDisposable.add(
+            Observable.zip(
+                PopularRemoteRepository(language = language).getMovies(),
+                TopRatedRemoteRepository(language = language).getMovies(),
+                NowPlayingRemoteRepository(language = language).getMovies(),
+                UpcomingRemoteRepository(language = language).getMovies(),
+                Function4 { t1: List<MovieVo>, t2: List<MovieVo>, t3: List<MovieVo>, t4: List<MovieVo>
+                    ->
+                    return@Function4 listOf(
+                        MainCardContainer(
+                            R.string.popular, t1.filter { movie -> movie.title != null }
+                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                                .toList()
+                        ),
+                        MainCardContainer(
+                            R.string.top_rated,
+                            t2.filter { movie -> movie.title != null }
+                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                                .toList()
+                        ),
+                        MainCardContainer(
+                            R.string.now_playing,
+                            t3.filter { movie -> movie.title != null }
+                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                                .toList()
+                        ),
+                        MainCardContainer(
+                            R.string.upcoming,
+                            t4.filter { movie -> movie.title != null }
+                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                                .toList()
+                        ),
+                    )
+                }
+            )
+                .applySchedulers()
+                .subscribe({
+                    progress_bar.visibility = View.GONE
+                    movies_recycler_view.adapter = adapter.apply { addAll(it) }
+                }, {
+
+                })
+        )
     }
-
-
-    /*   private fun downloadMovies() {
-           val apiClient = MovieApiClient.apiClient
-           compositeDisposable.add(Single.zip(
-               apiClient.getPopularMovies(language = language),
-               apiClient.getNowPlayingMovies(language = language),
-               apiClient.getUpcomingMovies(language = language),
-               apiClient.getTopRatedMovies(language = language),
-               Function4 { t1, t2, t3, t4 ->
-                   return@Function4 listOf(
-                       MainCardContainer(
-                           R.string.popular, t1.results?.filter { movie -> movie.title != null }
-                               ?.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
-                       ),
-                       MainCardContainer(
-                           R.string.now_playing, t2.results?.filter { movie -> movie.title != null }
-                               .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
-                       ),
-                       MainCardContainer(
-                           R.string.upcoming, t3.results?.filter { movie -> movie.title != null }
-                               .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
-                       ),
-                       MainCardContainer(
-                           R.string.top_rated, t4.results?.filter { movie -> movie.title != null }
-                               .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
-                       )
-                   )
-               }
-           )
-               .applySchedulers()
-               .subscribe({
-                   movies_recycler_view.adapter = adapter.apply { addAll(it) }
-               }, {
-
-               })
-           )
-       }*/
 
     override fun onStop() {
         super.onStop()

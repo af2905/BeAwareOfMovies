@@ -4,7 +4,7 @@ import com.af2905.beawareofmovies.util.extensions.fiveStarRating
 import com.af2905.beawareofmovies.util.extensions.getFullPathToImage
 
 data class MovieVo(
-    val id: Int? = null,
+    val id: Int,
     val title: String? = null,
     val overview: String? = null,
     val releaseDate: String? = null,
