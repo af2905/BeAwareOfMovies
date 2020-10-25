@@ -31,9 +31,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/actors_recycler_view"
-                android:layout_marginBottom="@dimen/material_margin_small"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/material_margin_small"
                 android:overScrollMode="never"
                 android:scrollbars="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

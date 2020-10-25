@@ -46,10 +46,11 @@ class MovieDetailsFragment : Fragment() {
 
     private fun downloadMovieDetails(movieId: Int) {
         var movieDetails: MovieDetailsVo? = null
+
         requestDisposable = Observable.zip(
             MovieDetailsRemoteRepository(movieId = movieId, language = language).getMovieDetails(),
             MovieActorsRemoteRepository(movieId = movieId, language = language).getActors(),
-            BiFunction { t1, t2 ->
+            BiFunction() { t1, t2 ->
                 movieDetails = t1
 
                 return@BiFunction listOf(
@@ -82,6 +83,7 @@ class MovieDetailsFragment : Fragment() {
                 }
                 val genres = movieDetails?.genres?.map { it.name }
                 movie_genre_text_view.text = genres?.joinToString(separator = COMMA_SEPARATOR)
+
                 actors_recycler_view.adapter = adapter.apply { addAll(it) }
             }, {
 
