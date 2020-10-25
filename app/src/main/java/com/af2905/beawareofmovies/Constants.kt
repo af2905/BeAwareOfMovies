@@ -14,4 +14,5 @@ object Constants {
     const val CATEGORY_UPCOMING_MOVIES = "upcoming"
     const val CATEGORY_USER_LIKED_MOVIES = "user_liked"
     const val CATEGORY_USER_WATCH_MOVIES = "user_watch"
+    const val CATEGORY_SEARCH_MOVIES = "search"
 }
