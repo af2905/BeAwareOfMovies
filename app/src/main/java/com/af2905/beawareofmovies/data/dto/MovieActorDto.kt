@@ -2,7 +2,7 @@ package com.af2905.beawareofmovies.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class ActorDto(
+data class MovieActorDto(
     @SerializedName("cast_id")
     val castId: Int? = null,
     val character: String? = null,

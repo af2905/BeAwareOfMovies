@@ -4,9 +4,9 @@ object Constants {
     const val SEARCH_QUERY = "searchQuery"
     const val MOVIE_ID = "movieId"
     const val COMMA_SEPARATOR = ", "
-    const val LANGUAGE_DEFAULT = "en-US"
 
     const val TABLE_NAME_MOVIES = "movies"
+    const val TABLE_NAME_MOVIE_DETAILS = "movie_details"
 
     const val CATEGORY_NOW_PLAYING_MOVIES = "now_playing"
     const val CATEGORY_POPULAR_MOVIES = "popular"

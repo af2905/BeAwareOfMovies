@@ -2,7 +2,7 @@ package com.af2905.beawareofmovies.data.vo
 
 import com.af2905.beawareofmovies.util.extensions.getFullPathToImage
 
-data class ActorVo(
+data class MovieActorVo(
     val id: Int? = null,
     val name: String? = null,
 ) {

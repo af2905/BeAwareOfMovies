@@ -13,6 +13,5 @@ class PopularRemoteRepository(private val language: String) : MovieRepository<Mo
             .getPopularMovies(language = language)
             .map { MovieMapper.toValueObject(it, CATEGORY_POPULAR_MOVIES) }
             .toObservable()
-            .map { return@map it }
     }
 }

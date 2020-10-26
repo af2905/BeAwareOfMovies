@@ -31,9 +31,9 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/actors_recycler_view"
-                android:layout_marginBottom="@dimen/material_margin_small"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/material_margin_small"
                 android:overScrollMode="never"
                 android:scrollbars="vertical"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -45,6 +45,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/title_movie_release_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/material_margin_small"
@@ -69,6 +70,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/title_movie_genre_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/material_margin_small"
@@ -93,7 +95,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/production_company_title"
+                    android:id="@+id/title_production_company_text_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/material_margin_normal"
