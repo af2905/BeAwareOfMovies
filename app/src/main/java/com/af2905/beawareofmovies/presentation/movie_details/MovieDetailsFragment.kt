@@ -54,8 +54,7 @@ class MovieDetailsFragment : Fragment() {
                 movieDetails = t1
 
                 return@BiFunction listOf(
-                    t2.filter { actor -> actor.profilePath != null }
-                        .map { actor -> ActorItem(actor) }
+                    t2.map { actor -> ActorItem(actor) }
                         .toList().let { ActorCardContainer(R.string.actors, it) })
             }
         )
