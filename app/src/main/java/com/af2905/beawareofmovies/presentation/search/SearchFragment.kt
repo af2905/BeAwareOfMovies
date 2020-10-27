@@ -69,8 +69,6 @@ class SearchFragment : Fragment() {
     private fun downloadRequestedMovies(searchTerm: String) {
         compositeDisposable.add(
             SearchMoviesRemoteRepository(searchTerm = searchTerm, language = language).getMovies()
-                .map { movies -> movies.filter { it.posterPath != null } }
-                .map { movies -> movies.sortedByDescending { it.releaseDate } }
                 .applySchedulers()
                 .subscribe({ movies ->
                     adapter.clear()
@@ -84,17 +82,17 @@ class SearchFragment : Fragment() {
     }
 
     private fun downloadPopularMoviesByDefault() {
-        compositeDisposable.add(PopularRemoteRepository(language = language).getMovies()
-            .map { movies -> movies.filter { it.posterPath != null } }
-            .applySchedulers()
-            .subscribe({ movies ->
-                adapter.clear()
-                movies.map { movie ->
-                    val list = listOf(SearchItem(movie) { openMovieDetails(movie) })
-                    movies_recycler_view.adapter = adapter.apply { addAll(list) }
-                }
-            }, {
-            })
+        compositeDisposable.add(
+            PopularRemoteRepository(language = language).getMovies()
+                .applySchedulers()
+                .subscribe({ movies ->
+                    adapter.clear()
+                    movies.map { movie ->
+                        val list = listOf(SearchItem(movie) { openMovieDetails(movie) })
+                        movies_recycler_view.adapter = adapter.apply { addAll(list) }
+                    }
+                }, {
+                })
         )
     }
 

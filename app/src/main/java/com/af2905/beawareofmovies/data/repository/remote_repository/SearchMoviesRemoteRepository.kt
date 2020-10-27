@@ -13,6 +13,8 @@ class SearchMoviesRemoteRepository(private val searchTerm: String, private val l
         return MovieApiClient.apiClient
             .searchMoviesByQuery(query = searchTerm, language = language)
             .map { MovieMapper.toValueObject(it, CATEGORY_SEARCH_MOVIES) }
+            .map { movies -> movies.filter { it.posterPath != null } }
+            .map { movies -> movies.sortedByDescending { it.releaseDate } }
             .toObservable()
     }
 }
