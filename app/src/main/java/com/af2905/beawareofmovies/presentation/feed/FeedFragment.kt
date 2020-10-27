@@ -94,30 +94,27 @@ class FeedFragment : Fragment() {
                 TopRatedRemoteRepository(language = language).getMovies(),
                 NowPlayingRemoteRepository(language = language).getMovies(),
                 UpcomingRemoteRepository(language = language).getMovies(),
-                Function4 { t1: List<MovieVo>, t2: List<MovieVo>, t3: List<MovieVo>, t4: List<MovieVo>
+                Function4 { t1, t2, t3, t4
                     ->
                     return@Function4 listOf(
                         MainCardContainer(
-                            R.string.popular, t1.filter { movie -> movie.title != null }
-                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                            R.string.popular,
+                            t1.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
                                 .toList()
                         ),
                         MainCardContainer(
                             R.string.top_rated,
-                            t2.filter { movie -> movie.title != null }
-                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                            t2.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
                                 .toList()
                         ),
                         MainCardContainer(
                             R.string.now_playing,
-                            t3.filter { movie -> movie.title != null }
-                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                            t3.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
                                 .toList()
                         ),
                         MainCardContainer(
                             R.string.upcoming,
-                            t4.filter { movie -> movie.title != null }
-                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                            t4.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
                                 .toList()
                         ),
                     )

@@ -12,6 +12,7 @@ class UpcomingRemoteRepository(private val language: String) : MovieRepository<M
         return MovieApiClient.apiClient
             .getUpcomingMovies(language = language)
             .map { MovieMapper.toValueObject(it, CATEGORY_UPCOMING_MOVIES) }
+            .map { it.filter { movie -> movie.title != null } }
             .toObservable()
     }
 }
