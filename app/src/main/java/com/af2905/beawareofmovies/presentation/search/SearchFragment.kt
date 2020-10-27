@@ -9,8 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.af2905.beawareofmovies.Constants
 import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
-import com.af2905.beawareofmovies.data.dto.MovieDto
-import com.af2905.beawareofmovies.data.network.MovieApiClient
+import com.af2905.beawareofmovies.data.repository.remote_repository.PopularRemoteRepository
+import com.af2905.beawareofmovies.data.repository.remote_repository.SearchMoviesRemoteRepository
+import com.af2905.beawareofmovies.data.vo.MovieVo
 import com.af2905.beawareofmovies.util.extensions.applySchedulers
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
@@ -67,8 +68,7 @@ class SearchFragment : Fragment() {
 
     private fun downloadRequestedMovies(searchTerm: String) {
         compositeDisposable.add(
-            MovieApiClient.apiClient.searchMoviesByQuery(query = searchTerm, language = language)
-                .map { moviesResponse -> moviesResponse.results }
+            SearchMoviesRemoteRepository(searchTerm = searchTerm, language = language).getMovies()
                 .map { movies -> movies.filter { it.posterPath != null } }
                 .map { movies -> movies.sortedByDescending { it.releaseDate } }
                 .applySchedulers()
@@ -84,8 +84,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun downloadPopularMoviesByDefault() {
-        compositeDisposable.add(MovieApiClient.apiClient.getPopularMovies(language = language)
-            .map { moviesResponse -> moviesResponse.results }
+        compositeDisposable.add(PopularRemoteRepository(language = language).getMovies()
             .map { movies -> movies.filter { it.posterPath != null } }
             .applySchedulers()
             .subscribe({ movies ->
@@ -99,7 +98,7 @@ class SearchFragment : Fragment() {
         )
     }
 
-    private fun openMovieDetails(movie: MovieDto) {
+    private fun openMovieDetails(movie: MovieVo) {
         val options = navOptions {
             anim {
                 enter = R.anim.slide_in_right
