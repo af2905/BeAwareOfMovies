@@ -3,23 +3,19 @@ package com.af2905.beawareofmovies.presentation.feed
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.af2905.beawareofmovies.Constants.MOVIE_ID
 import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
-import com.af2905.beawareofmovies.data.repository.remote_repository.NowPlayingRemoteRepository
-import com.af2905.beawareofmovies.data.repository.remote_repository.PopularRemoteRepository
-import com.af2905.beawareofmovies.data.repository.remote_repository.TopRatedRemoteRepository
-import com.af2905.beawareofmovies.data.repository.remote_repository.UpcomingRemoteRepository
 import com.af2905.beawareofmovies.data.vo.MovieVo
+import com.af2905.beawareofmovies.domain.usecase.FeedUseCase
 import com.af2905.beawareofmovies.util.extensions.applySchedulers
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Function4
 import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.feed_header.*
 import java.util.concurrent.TimeUnit
@@ -28,6 +24,7 @@ class FeedFragment : Fragment() {
     private var compositeDisposable = CompositeDisposable()
     private lateinit var language: String
     private val adapter by lazy { GroupAdapter<GroupieViewHolder>() }
+    lateinit var viewModel: FeedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -42,11 +39,16 @@ class FeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val feedUseCase = FeedUseCase()
+        viewModel = ViewModelProvider(this).get(FeedViewModel::class.java)
         progress_bar.visibility = View.VISIBLE
         language = resources.getString(R.string.language)
         movies_recycler_view.layoutManager = LinearLayoutManager(context)
         getSearchQuery()
-        downloadMovies()
+        viewModel.downloadMovies(feedUseCase, language)
+        viewModel.getZippedMovies().observe(viewLifecycleOwner, {
+            adapter.clear()
+            showMovies(it) })
     }
 
     private fun getSearchQuery() {
@@ -87,47 +89,42 @@ class FeedFragment : Fragment() {
         findNavController().navigate(R.id.movie_details_fragment, bundle, options)
     }
 
-    private fun downloadMovies() {
-        compositeDisposable.add(
-            Observable.zip(
-                PopularRemoteRepository(language = language).getMovies(),
-                TopRatedRemoteRepository(language = language).getMovies(),
-                NowPlayingRemoteRepository(language = language).getMovies(),
-                UpcomingRemoteRepository(language = language).getMovies(),
-                Function4 { t1, t2, t3, t4
-                    ->
-                    return@Function4 listOf(
-                        MainCardContainer(
-                            R.string.popular,
-                            t1.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                                .toList()
-                        ),
-                        MainCardContainer(
-                            R.string.top_rated,
-                            t2.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                                .toList()
-                        ),
-                        MainCardContainer(
-                            R.string.now_playing,
-                            t3.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                                .toList()
-                        ),
-                        MainCardContainer(
-                            R.string.upcoming,
-                            t4.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                                .toList()
-                        ),
-                    )
+    private fun showMovies(zippedMovies: HashMap<FeedUseCase.MovieCategories, List<MovieVo>>) {
+        zippedMovies.map {
+            val moviesContainer = mutableListOf<MainCardContainer>()
+            when (it.key) {
+                FeedUseCase.MovieCategories.POPULAR -> {
+                    moviesContainer.add(MainCardContainer(
+                        R.string.popular,
+                        it.value.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                            .toList()
+                    ))
                 }
-            )
-                .applySchedulers()
-                .subscribe({
-                    progress_bar.visibility = View.GONE
-                    movies_recycler_view.adapter = adapter.apply { addAll(it) }
-                }, {
-
-                })
-        )
+                FeedUseCase.MovieCategories.TOP_RATED -> {
+                    moviesContainer.add(MainCardContainer(
+                        R.string.top_rated,
+                        it.value.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                            .toList()
+                    ))
+                }
+                FeedUseCase.MovieCategories.NOW_PLAYING -> {
+                    moviesContainer.add(MainCardContainer(
+                        R.string.now_playing,
+                        it.value.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                            .toList()
+                    ))
+                }
+                FeedUseCase.MovieCategories.UPCOMING -> {
+                    moviesContainer.add(MainCardContainer(
+                        R.string.upcoming,
+                        it.value.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                            .toList()
+                    ))
+                }
+            }
+            progress_bar.visibility = View.GONE
+            movies_recycler_view.adapter = adapter.apply { addAll(moviesContainer) }
+        }
     }
 
     override fun onStop() {
