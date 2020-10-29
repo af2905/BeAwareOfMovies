@@ -48,7 +48,8 @@ class FeedFragment : Fragment() {
         viewModel.downloadMovies(feedUseCase, language)
         viewModel.getZippedMovies().observe(viewLifecycleOwner, {
             adapter.clear()
-            showMovies(it) })
+            showMovies(it)
+        })
     }
 
     private fun getSearchQuery() {
@@ -90,41 +91,41 @@ class FeedFragment : Fragment() {
     }
 
     private fun showMovies(zippedMovies: HashMap<FeedUseCase.MovieCategories, List<MovieVo>>) {
-        zippedMovies.map {
-            val moviesContainer = mutableListOf<MainCardContainer>()
-            when (it.key) {
-                FeedUseCase.MovieCategories.POPULAR -> {
-                    moviesContainer.add(MainCardContainer(
-                        R.string.popular,
-                        it.value.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                            .toList()
-                    ))
-                }
-                FeedUseCase.MovieCategories.TOP_RATED -> {
-                    moviesContainer.add(MainCardContainer(
-                        R.string.top_rated,
-                        it.value.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                            .toList()
-                    ))
-                }
-                FeedUseCase.MovieCategories.NOW_PLAYING -> {
-                    moviesContainer.add(MainCardContainer(
-                        R.string.now_playing,
-                        it.value.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                            .toList()
-                    ))
-                }
-                FeedUseCase.MovieCategories.UPCOMING -> {
-                    moviesContainer.add(MainCardContainer(
-                        R.string.upcoming,
-                        it.value.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                            .toList()
-                    ))
-                }
-            }
-            progress_bar.visibility = View.GONE
-            movies_recycler_view.adapter = adapter.apply { addAll(moviesContainer) }
+        val moviesContainer = mutableListOf<MainCardContainer>()
+        val popular = zippedMovies[FeedUseCase.MovieCategories.POPULAR]
+        popular?.let {
+            moviesContainer.add(MainCardContainer(
+                R.string.popular,
+                popular.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                    .toList()
+            ))
         }
+        val topRated = zippedMovies[FeedUseCase.MovieCategories.TOP_RATED]
+        topRated?.let {
+            moviesContainer.add(MainCardContainer(
+                R.string.top_rated,
+                topRated.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                    .toList()
+            ))
+        }
+        val nowPlaying = zippedMovies[FeedUseCase.MovieCategories.NOW_PLAYING]
+        nowPlaying?.let {
+            moviesContainer.add(MainCardContainer(
+                R.string.now_playing,
+                nowPlaying.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                    .toList()
+            ))
+        }
+        val upcoming = zippedMovies[FeedUseCase.MovieCategories.UPCOMING]
+        upcoming?.let {
+            moviesContainer.add(MainCardContainer(
+                R.string.upcoming,
+                upcoming.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
+                    .toList()
+            ))
+        }
+        progress_bar.visibility = View.GONE
+        movies_recycler_view.adapter = adapter.apply { addAll(moviesContainer) }
     }
 
     override fun onStop() {
