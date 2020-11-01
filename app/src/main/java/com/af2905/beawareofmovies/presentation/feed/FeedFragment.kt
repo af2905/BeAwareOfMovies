@@ -40,13 +40,15 @@ class FeedFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val feedUseCase = FeedUseCase()
-        viewModel = ViewModelProvider(this).get(FeedViewModel::class.java)
-        progress_bar.visibility = View.VISIBLE
         language = resources.getString(R.string.language)
+        viewModel = ViewModelProvider(
+            this, ViewModelFactory(feedUseCase, language)
+        ).get(FeedViewModel::class.java)
+        progress_bar.visibility = View.VISIBLE
         movies_recycler_view.layoutManager = LinearLayoutManager(context)
         getSearchQuery()
-        viewModel.downloadMovies(feedUseCase, language)
-        viewModel.getZippedMovies().observe(viewLifecycleOwner, {
+        viewModel.downloadMovies()
+        viewModel.zippedMovies.observe(viewLifecycleOwner, {
             adapter.clear()
             showMovies(it)
         })
@@ -92,40 +94,27 @@ class FeedFragment : Fragment() {
 
     private fun showMovies(zippedMovies: HashMap<FeedUseCase.MovieCategories, List<MovieVo>>) {
         val moviesContainer = mutableListOf<MainCardContainer>()
+
         val popular = zippedMovies[FeedUseCase.MovieCategories.POPULAR]
-        popular?.let {
-            moviesContainer.add(MainCardContainer(
-                R.string.popular,
-                popular.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                    .toList()
-            ))
-        }
+        popular?.let { moviesContainer.add(createContainer(R.string.popular, popular)) }
+
         val topRated = zippedMovies[FeedUseCase.MovieCategories.TOP_RATED]
-        topRated?.let {
-            moviesContainer.add(MainCardContainer(
-                R.string.top_rated,
-                topRated.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                    .toList()
-            ))
-        }
+        topRated?.let { moviesContainer.add(createContainer(R.string.top_rated, topRated)) }
+
         val nowPlaying = zippedMovies[FeedUseCase.MovieCategories.NOW_PLAYING]
-        nowPlaying?.let {
-            moviesContainer.add(MainCardContainer(
-                R.string.now_playing,
-                nowPlaying.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                    .toList()
-            ))
-        }
+        nowPlaying?.let { moviesContainer.add(createContainer(R.string.now_playing, nowPlaying)) }
+
         val upcoming = zippedMovies[FeedUseCase.MovieCategories.UPCOMING]
-        upcoming?.let {
-            moviesContainer.add(MainCardContainer(
-                R.string.upcoming,
-                upcoming.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                    .toList()
-            ))
-        }
+        upcoming?.let { moviesContainer.add(createContainer(R.string.upcoming, upcoming)) }
+
         progress_bar.visibility = View.GONE
         movies_recycler_view.adapter = adapter.apply { addAll(moviesContainer) }
+    }
+
+    private fun createContainer(title: Int, movies: List<MovieVo>): MainCardContainer {
+        return MainCardContainer(
+            title, movies.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
+        )
     }
 
     override fun onStop() {

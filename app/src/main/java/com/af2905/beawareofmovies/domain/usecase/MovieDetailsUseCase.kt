@@ -11,10 +11,9 @@ class MovieDetailsUseCase(private val movieId: Int, private val language: String
         return Observable.zip(
             MovieDetailsRemoteRepository(movieId = movieId, language = language).getMovieDetails(),
             MovieActorsRemoteRepository(movieId = movieId, language = language).getActors(),
-            BiFunction() { t1, t2 ->
-                return@BiFunction MovieDetailsPageData(t1, t2)
+            BiFunction() { movieDetails, movieActors ->
+                return@BiFunction MovieDetailsPageData(movieDetails, movieActors)
             }
-        )
-            .applySchedulers()
+        ).applySchedulers()
     }
 }

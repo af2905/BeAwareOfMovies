@@ -17,10 +17,10 @@ class FeedUseCase {
             TopRatedRemoteRepository(language = language).getMovies(),
             NowPlayingRemoteRepository(language = language).getMovies(),
             UpcomingRemoteRepository(language = language).getMovies(),
-            Function4 { t1, t2, t3, t4 ->
+            Function4 { popular, topRated, nowPlaying, upcoming ->
                 return@Function4 hashMapOf(
-                    MovieCategories.POPULAR to t1, MovieCategories.TOP_RATED to t2,
-                    MovieCategories.NOW_PLAYING to t3, MovieCategories.UPCOMING to t4
+                    MovieCategories.POPULAR to popular, MovieCategories.TOP_RATED to topRated,
+                    MovieCategories.NOW_PLAYING to nowPlaying, MovieCategories.UPCOMING to upcoming
                 )
             }
         ).applySchedulers()
