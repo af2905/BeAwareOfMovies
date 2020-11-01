@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.af2905.beawareofmovies.data.vo.MovieVo
 import com.af2905.beawareofmovies.domain.usecase.FeedUseCase
 import io.reactivex.disposables.Disposables
+import timber.log.Timber
 
 class FeedViewModel(private val feedUseCase: FeedUseCase, private val language: String) :
     ViewModel() {
@@ -19,7 +20,7 @@ class FeedViewModel(private val feedUseCase: FeedUseCase, private val language: 
             .subscribe({
                 zippedMovies.value = it
             }, {
-
+                Timber.tag("ERROR").d(it.message.toString())
             })
     }
 

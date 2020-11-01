@@ -18,6 +18,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.feed_header.*
 import kotlinx.android.synthetic.main.fragment_search.*
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 class SearchFragment : Fragment() {
@@ -62,6 +63,7 @@ class SearchFragment : Fragment() {
                     else -> downloadRequestedMovies(it)
                 }
             }, {
+                Timber.tag("ERROR").d(it.message.toString())
             })
         )
     }
@@ -77,6 +79,7 @@ class SearchFragment : Fragment() {
                         movies_recycler_view.adapter = adapter.apply { addAll(list) }
                     }
                 }, {
+                    Timber.tag("ERROR").d(it.message.toString())
                 })
         )
     }
@@ -92,6 +95,7 @@ class SearchFragment : Fragment() {
                         movies_recycler_view.adapter = adapter.apply { addAll(list) }
                     }
                 }, {
+                    Timber.tag("ERROR").d(it.message.toString())
                 })
         )
     }

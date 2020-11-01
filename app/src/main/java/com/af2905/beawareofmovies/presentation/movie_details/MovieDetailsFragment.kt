@@ -16,6 +16,7 @@ import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
 import io.reactivex.disposables.Disposables
 import kotlinx.android.synthetic.main.movie_details_fragment.*
 import kotlinx.android.synthetic.main.movie_details_header.*
+import timber.log.Timber
 
 class MovieDetailsFragment : Fragment() {
     private lateinit var language: String
@@ -73,7 +74,7 @@ class MovieDetailsFragment : Fragment() {
                     )
                 actors_recycler_view.adapter = adapter.apply { addAll(actors) }
             }, {
-
+                Timber.tag("ERROR").d(it.message.toString())
             })
     }
 
