@@ -13,9 +13,7 @@ class MovieActorsRemoteRepository(private val movieId: Int, private val language
             .getMovieActors(movieId = movieId.toString(), language = language)
             .map {
                 val actors = it.actors ?: emptyList()
-                actors
-                    .filter { actor -> actor.profilePath != null }
-                    .map { actor -> MovieActorMapper.toValueObject(actor) }
+                actors.map { actor -> MovieActorMapper.toValueObject(actor) }
             }
             .toObservable()
     }

@@ -12,7 +12,6 @@ class NowPlayingRemoteRepository(private val language: String) : MovieRepository
         return MovieApiClient.apiClient
             .getNowPlayingMovies(language = language)
             .map { MovieMapper.toValueObject(it, CATEGORY_NOW_PLAYING_MOVIES) }
-            .map { it.filter { movie -> movie.title != null } }
             .toObservable()
     }
 }
