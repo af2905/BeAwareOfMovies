@@ -12,7 +12,6 @@ class TopRatedRemoteRepository(private val language: String) : MovieRepository<M
         return MovieApiClient.apiClient
             .getTopRatedMovies(language = language)
             .map { MovieMapper.toValueObject(it, CATEGORY_TOP_RATED_MOVIES) }
-            .map { it.filter { movie -> movie.title != null } }
             .toObservable()
     }
 }

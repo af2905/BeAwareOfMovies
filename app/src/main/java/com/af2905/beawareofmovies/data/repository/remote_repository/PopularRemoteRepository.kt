@@ -12,11 +12,6 @@ class PopularRemoteRepository(private val language: String) : MovieRepository<Mo
         return MovieApiClient.apiClient
             .getPopularMovies(language = language)
             .map { MovieMapper.toValueObject(it, CATEGORY_POPULAR_MOVIES) }
-            .map {
-                it
-                    .filter { movie -> movie.posterPath != null }
-                    .filter { movie -> movie.title != null }
-            }
             .toObservable()
     }
 }

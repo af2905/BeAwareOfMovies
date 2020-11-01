@@ -6,7 +6,10 @@ import com.af2905.beawareofmovies.data.vo.MovieActorVo
 
 object MovieActorMapper {
     fun toValueObject(dto: ActorsResponseDto): List<MovieActorVo>? {
-        return dto.actors?.map { toValueObject(it) }
+        return if (dto.actors != null) dto.actors
+            .filterNot { it.profilePath.isNullOrEmpty() }
+            .map { toValueObject(it) }
+        else emptyList()
     }
 
     fun toValueObject(dto: MovieActorDto): MovieActorVo {
