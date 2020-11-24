@@ -20,7 +20,7 @@ class FeedViewModel(private val feedUseCase: FeedUseCase, private val language: 
             .subscribe({
                 zippedMovies.value = it
             }, {
-                Timber.tag("ERROR").d(it.message.toString())
+                Timber.tag("ERROR").e(it.message.toString())
             })
     }
 

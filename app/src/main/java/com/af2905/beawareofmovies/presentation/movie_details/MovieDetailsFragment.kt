@@ -74,7 +74,7 @@ class MovieDetailsFragment : Fragment() {
                     )
                 actors_recycler_view.adapter = adapter.apply { addAll(actors) }
             }, {
-                Timber.tag("ERROR").d(it.message.toString())
+                Timber.tag("ERROR").e(it.message.toString())
             })
     }
 

@@ -63,7 +63,7 @@ class SearchFragment : Fragment() {
                     else -> downloadRequestedMovies(it)
                 }
             }, {
-                Timber.tag("ERROR").d(it.message.toString())
+                Timber.tag("ERROR").e(it.message.toString())
             })
         )
     }
@@ -79,7 +79,7 @@ class SearchFragment : Fragment() {
                         movies_recycler_view.adapter = adapter.apply { addAll(list) }
                     }
                 }, {
-                    Timber.tag("ERROR").d(it.message.toString())
+                    Timber.tag("ERROR").e(it.message.toString())
                 })
         )
     }
@@ -95,7 +95,7 @@ class SearchFragment : Fragment() {
                         movies_recycler_view.adapter = adapter.apply { addAll(list) }
                     }
                 }, {
-                    Timber.tag("ERROR").d(it.message.toString())
+                    Timber.tag("ERROR").e(it.message.toString())
                 })
         )
     }
