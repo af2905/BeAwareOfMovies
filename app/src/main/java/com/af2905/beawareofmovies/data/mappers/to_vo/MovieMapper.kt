@@ -6,9 +6,13 @@ import com.af2905.beawareofmovies.data.vo.MovieVo
 
 object MovieMapper {
     fun toValueObject(dto: MoviesResponseDto, category: String): List<MovieVo> {
-        return if (dto.results != null) dto.results.map {
-            toValueObject(it, category)
-        } else emptyList()
+        return if (dto.results != null) dto.results
+            .filterNot { it.title.isNullOrEmpty() }
+            .filterNot { it.overview.isNullOrEmpty() }
+            .filterNot { it.posterPath.isNullOrEmpty() }
+            .map {
+                toValueObject(it, category)
+            } else emptyList()
     }
 
     private fun toValueObject(dto: MovieDto, category: String): MovieVo {

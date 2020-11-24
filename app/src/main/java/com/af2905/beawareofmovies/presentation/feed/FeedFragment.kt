@@ -3,23 +3,19 @@ package com.af2905.beawareofmovies.presentation.feed
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.af2905.beawareofmovies.Constants.MOVIE_ID
 import com.af2905.beawareofmovies.Constants.SEARCH_QUERY
 import com.af2905.beawareofmovies.R
-import com.af2905.beawareofmovies.data.repository.remote_repository.NowPlayingRemoteRepository
-import com.af2905.beawareofmovies.data.repository.remote_repository.PopularRemoteRepository
-import com.af2905.beawareofmovies.data.repository.remote_repository.TopRatedRemoteRepository
-import com.af2905.beawareofmovies.data.repository.remote_repository.UpcomingRemoteRepository
 import com.af2905.beawareofmovies.data.vo.MovieVo
+import com.af2905.beawareofmovies.domain.usecase.FeedUseCase
 import com.af2905.beawareofmovies.util.extensions.applySchedulers
 import com.xwray.groupie.GroupAdapter
 import com.xwray.groupie.kotlinandroidextensions.GroupieViewHolder
-import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.functions.Function4
 import kotlinx.android.synthetic.main.feed_fragment.*
 import kotlinx.android.synthetic.main.feed_header.*
 import java.util.concurrent.TimeUnit
@@ -28,6 +24,7 @@ class FeedFragment : Fragment() {
     private var compositeDisposable = CompositeDisposable()
     private lateinit var language: String
     private val adapter by lazy { GroupAdapter<GroupieViewHolder>() }
+    lateinit var viewModel: FeedViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -42,11 +39,19 @@ class FeedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progress_bar.visibility = View.VISIBLE
+        val feedUseCase = FeedUseCase()
         language = resources.getString(R.string.language)
+        viewModel = ViewModelProvider(
+            this, ViewModelFactory(feedUseCase, language)
+        ).get(FeedViewModel::class.java)
+        progress_bar.visibility = View.VISIBLE
         movies_recycler_view.layoutManager = LinearLayoutManager(context)
         getSearchQuery()
-        downloadMovies()
+        viewModel.downloadMovies()
+        viewModel.zippedMovies.observe(viewLifecycleOwner, {
+            adapter.clear()
+            showMovies(it)
+        })
     }
 
     private fun getSearchQuery() {
@@ -87,49 +92,28 @@ class FeedFragment : Fragment() {
         findNavController().navigate(R.id.movie_details_fragment, bundle, options)
     }
 
-    private fun downloadMovies() {
-        compositeDisposable.add(
-            Observable.zip(
-                PopularRemoteRepository(language = language).getMovies(),
-                TopRatedRemoteRepository(language = language).getMovies(),
-                NowPlayingRemoteRepository(language = language).getMovies(),
-                UpcomingRemoteRepository(language = language).getMovies(),
-                Function4 { t1: List<MovieVo>, t2: List<MovieVo>, t3: List<MovieVo>, t4: List<MovieVo>
-                    ->
-                    return@Function4 listOf(
-                        MainCardContainer(
-                            R.string.popular, t1.filter { movie -> movie.title != null }
-                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                                .toList()
-                        ),
-                        MainCardContainer(
-                            R.string.top_rated,
-                            t2.filter { movie -> movie.title != null }
-                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                                .toList()
-                        ),
-                        MainCardContainer(
-                            R.string.now_playing,
-                            t3.filter { movie -> movie.title != null }
-                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                                .toList()
-                        ),
-                        MainCardContainer(
-                            R.string.upcoming,
-                            t4.filter { movie -> movie.title != null }
-                                .map { movie -> MovieItem(movie) { openMovieDetails(movie) } }
-                                .toList()
-                        ),
-                    )
-                }
-            )
-                .applySchedulers()
-                .subscribe({
-                    progress_bar.visibility = View.GONE
-                    movies_recycler_view.adapter = adapter.apply { addAll(it) }
-                }, {
+    private fun showMovies(zippedMovies: HashMap<FeedUseCase.MovieCategories, List<MovieVo>>) {
+        val moviesContainer = mutableListOf<MainCardContainer>()
 
-                })
+        val popular = zippedMovies[FeedUseCase.MovieCategories.POPULAR]
+        popular?.let { moviesContainer.add(createContainer(R.string.popular, popular)) }
+
+        val topRated = zippedMovies[FeedUseCase.MovieCategories.TOP_RATED]
+        topRated?.let { moviesContainer.add(createContainer(R.string.top_rated, topRated)) }
+
+        val nowPlaying = zippedMovies[FeedUseCase.MovieCategories.NOW_PLAYING]
+        nowPlaying?.let { moviesContainer.add(createContainer(R.string.now_playing, nowPlaying)) }
+
+        val upcoming = zippedMovies[FeedUseCase.MovieCategories.UPCOMING]
+        upcoming?.let { moviesContainer.add(createContainer(R.string.upcoming, upcoming)) }
+
+        progress_bar.visibility = View.GONE
+        movies_recycler_view.adapter = adapter.apply { addAll(moviesContainer) }
+    }
+
+    private fun createContainer(title: Int, movies: List<MovieVo>): MainCardContainer {
+        return MainCardContainer(
+            title, movies.map { movie -> MovieItem(movie) { openMovieDetails(movie) } }.toList()
         )
     }
 
